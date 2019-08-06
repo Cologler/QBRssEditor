@@ -36,6 +36,7 @@ namespace QBRssEditor
                 .AddSingleton<OriginMarkReadService>()
                 .AddSingleton<IMarkReadService>(ioc => ioc.GetRequiredService<OriginMarkReadService>())
                 .AddSingleton<FileWriteWaiterService>()
+                .AddTransient<MainWindowViewModel>()
                 .BuildServiceProvider();
         }
 

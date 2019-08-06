@@ -20,6 +20,7 @@
             </Grid.RowDefinitions>
             
             <TextBox x:Name="SearchBox"
+                     Padding="2"
                      Text="{Binding SearchText, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
 
             <Grid Grid.Row="1"
@@ -56,6 +57,8 @@
                                       Click="MarkReadMenuItem_Click"/>
                             <MenuItem Header="Open torrent url"
                                       Click="OpenTorrentUrlMenuItem_Click" />
+                            <MenuItem Header="As search text"
+                                      Click="AsSearchTextMenuItem_Click" />
                         </ContextMenu>
                     </ListView.ContextMenu>
                 </ListView>
@@ -65,9 +68,10 @@
         <Grid Grid.Row="1">
             <StatusBar>
                 <TextBlock Text="total:"/>
-                <TextBlock Text="?" />
+                <TextBlock Text="{Binding TotalCount}" />
                 <Separator />
-                <TextBlock Text="?" />
+                <TextBlock Text="Journal:" />
+                <TextBlock Text="{Binding JournalCount}" />
             </StatusBar>
         </Grid>
     </Grid>

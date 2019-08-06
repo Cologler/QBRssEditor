@@ -18,27 +18,38 @@ namespace QBRssEditor
 {
     class MainWindowViewModel : INotifyPropertyChanged
     {
-        private string _searchText = string.Empty;
+        private string _searchText = null;
+        private string _totalCount = "?";
+        private readonly JournalService _journal;
 
         public event PropertyChangedEventHandler PropertyChanged;
 
-        void ChangeValue<T>(ref T field, T newValue, [CallerMemberName] string propertyName = "")
+        public MainWindowViewModel(JournalService journal)
+        {
+            this._journal = journal;
+        }
+
+        void OnPropertyChanged([CallerMemberName] string propertyName = "") =>
+            this.PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+
+        bool ChangeValue<T>(ref T field, T newValue, [CallerMemberName] string propertyName = "")
         {
             if (!EqualityComparer<T>.Default.Equals(field, newValue))
             {
                 field = newValue;
-                this.PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+                this.OnPropertyChanged(propertyName);
+                return true;
             }
+            return false;
         }
 
         public string SearchText
         {
-            get => _searchText;
+            get => this._searchText;
             set
             {
-                if (this._searchText != value)
+                if (this.ChangeValue(ref this._searchText, value))
                 {
-                    this._searchText = value;
                     this.OnSearchTextUpdate(value);
                 }
             }
@@ -53,19 +64,31 @@ namespace QBRssEditor
 
             var service = App.ServiceProvider.GetRequiredService<RssItemsService>();
 
-            var items = (await service.ListAsync()).AsEnumerable();
+            var items = await service.ListAsync();
+            var source = items.AsEnumerable();
             if (text != this.SearchText) return;
 
             if (!this.IsIncludeAll)
             {
-                items = items.Where(z => !z.IsRead);
+                source = source.Where(z => !z.IsRead);
             }
 
-            items = string.IsNullOrEmpty(text)
-                ? items.Take(300)
-                : items.Where(z => z.Title.IndexOf(text, StringComparison.OrdinalIgnoreCase) >= 0);
+            if (!string.IsNullOrEmpty(text))
+            {
+                source = source.Where(z => z.Title.IndexOf(text, StringComparison.OrdinalIgnoreCase) >= 0);
+            }
+            var result = source.ToList();
 
-            this.UpdateItems(items.ToList());
+            if (string.IsNullOrEmpty(text) && result.Count > 300)
+            {
+                this.TotalCount = $"300/{result.Count}";
+            }
+            else
+            {
+                this.TotalCount = result.Count.ToString();
+            }
+            
+            this.UpdateItems(string.IsNullOrEmpty(text) ? result.Take(300) : result);
         }
 
         private void UpdateItems(IEnumerable<RssItem> items)
@@ -105,7 +128,7 @@ namespace QBRssEditor
         public async void MarkReaded(IList items)
         {
             var viewModels = items.OfType<ItemViewModel>().ToArray();
-            if (viewModels.Length == 0) return;            
+            if (viewModels.Length == 0) return;
             var rssItems = viewModels.Select(z => z.RssItem).ToArray();
             var service = App.ServiceProvider.GetRequiredService<RssItemsService>();
             service.MarkReaded(rssItems);
@@ -114,6 +137,7 @@ namespace QBRssEditor
                 viewModel.Updated();
             }
             await service.FlushAsync();
+            this.OnPropertyChanged(nameof(this.JournalCount));
         }
 
         public void OpenTorrentUrl(IList items)
@@ -127,6 +151,21 @@ namespace QBRssEditor
                     proc.WaitForExit();
                 }
             }
+        }
+
+        internal void AsSearchText(IList items)
+        {
+            var viewModel = items.OfType<ItemViewModel>().FirstOrDefault();
+            if (viewModel == null) return;
+            this.SearchText = viewModel.RssItem.Title ?? string.Empty;
+        }
+
+        public int JournalCount => this._journal.Count;
+
+        public string TotalCount
+        {
+            get => this._totalCount;
+            set => this.ChangeValue(ref this._totalCount, value);
         }
     }
 }

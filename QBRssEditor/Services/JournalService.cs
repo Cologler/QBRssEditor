@@ -29,6 +29,8 @@ namespace QBRssEditor.Services
             }
         }
 
+        public int Count => this._data.Count;
+
         public Task SaveAsync() => 
             this._writer.WriteAsync(Task.Run(() => File.WriteAllText(Path, JsonConvert.SerializeObject(this._data, this._settings))));
 

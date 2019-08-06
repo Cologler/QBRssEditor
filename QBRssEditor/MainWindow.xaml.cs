@@ -14,6 +14,7 @@ using System.Windows.Navigation;
 using System.Windows.Shapes;
 using QBRssEditor.Model;
 using QBRssEditor.Services;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace QBRssEditor
 {
@@ -25,7 +26,8 @@ namespace QBRssEditor
         public MainWindow()
         {
             InitializeComponent();
-            this.ViewModel = new MainWindowViewModel();
+            this.ViewModel = App.ServiceProvider.GetService<MainWindowViewModel>();
+            this.ViewModel.SearchText = string.Empty;
         }
 
         MainWindowViewModel ViewModel
@@ -44,6 +46,12 @@ namespace QBRssEditor
         {
             var items = this.ItemsListView.SelectedItems;
             this.ViewModel.OpenTorrentUrl(items);
+        }
+
+        private void AsSearchTextMenuItem_Click(object sender, RoutedEventArgs e)
+        {
+            var items = this.ItemsListView.SelectedItems;
+            this.ViewModel.AsSearchText(items);
         }
     }
 }
