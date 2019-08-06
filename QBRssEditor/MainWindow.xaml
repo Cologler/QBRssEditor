@@ -72,6 +72,8 @@
                 <Separator />
                 <TextBlock Text="Journal:" />
                 <TextBlock Text="{Binding JournalCount}" />
+                <Button Content="flush"
+                        Click="Flush_Click"/>
             </StatusBar>
         </Grid>
     </Grid>

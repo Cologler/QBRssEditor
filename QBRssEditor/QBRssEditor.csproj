@@ -64,6 +64,7 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="Model\RssFileStatesManager.cs" />
     <Compile Include="Services\FileWriteWaiterService.cs" />
     <Compile Include="Services\IMarkReadService.cs" />
     <Compile Include="Services\IQBitStatusService.cs" />
@@ -86,7 +87,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="MainWindowViewModel.cs" />
-    <Compile Include="Model\RssFilesManager.cs" />
+    <Compile Include="Model\RssFileState.cs" />
     <Compile Include="Model\RssItem.cs" />
     <Compile Include="Properties\AssemblyInfo.cs">
       <SubType>Code</SubType>

@@ -21,12 +21,14 @@ namespace QBRssEditor
         private string _searchText = null;
         private string _totalCount = "?";
         private readonly JournalService _journal;
+        private readonly RssItemsService _rssItems;
 
         public event PropertyChangedEventHandler PropertyChanged;
 
-        public MainWindowViewModel(JournalService journal)
+        public MainWindowViewModel(JournalService journal, RssItemsService rssItems)
         {
             this._journal = journal;
+            this._rssItems = rssItems;
         }
 
         void OnPropertyChanged([CallerMemberName] string propertyName = "") =>
@@ -62,10 +64,8 @@ namespace QBRssEditor
             await Task.Delay(300);
             if (text != this.SearchText) return;
 
-            var service = App.ServiceProvider.GetRequiredService<RssItemsService>();
-
-            var items = await service.ListAsync();
-            var source = items.AsEnumerable();
+            var items = await this._rssItems.ListAsync();
+            var source = items.SelectMany(z => z.Items).AsEnumerable();
             if (text != this.SearchText) return;
 
             if (!this.IsIncludeAll)
@@ -130,13 +130,12 @@ namespace QBRssEditor
             var viewModels = items.OfType<ItemViewModel>().ToArray();
             if (viewModels.Length == 0) return;
             var rssItems = viewModels.Select(z => z.RssItem).ToArray();
-            var service = App.ServiceProvider.GetRequiredService<RssItemsService>();
-            service.MarkReaded(rssItems);
+            this._rssItems.MarkReaded(rssItems);
             foreach (var viewModel in viewModels)
             {
                 viewModel.Updated();
             }
-            await service.FlushAsync();
+            await this._rssItems.FlushAsync();
             this.OnPropertyChanged(nameof(this.JournalCount));
         }
 
@@ -153,11 +152,22 @@ namespace QBRssEditor
             }
         }
 
-        internal void AsSearchText(IList items)
+        public void AsSearchText(IList items)
         {
             var viewModel = items.OfType<ItemViewModel>().FirstOrDefault();
             if (viewModel == null) return;
             this.SearchText = viewModel.RssItem.Title ?? string.Empty;
+        }
+
+        public async void Flush()
+        {
+            await this.FlushAsync();
+        }
+
+        public async Task FlushAsync()
+        {
+            await this._rssItems.FlushAsync();
+            this.OnPropertyChanged(nameof(this.JournalCount));
         }
 
         public int JournalCount => this._journal.Count;

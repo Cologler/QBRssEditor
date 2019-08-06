@@ -53,5 +53,10 @@ namespace QBRssEditor
             var items = this.ItemsListView.SelectedItems;
             this.ViewModel.AsSearchText(items);
         }
+
+        private void Flush_Click(object sender, RoutedEventArgs e)
+        {
+            this.ViewModel.Flush();
+        }
     }
 }

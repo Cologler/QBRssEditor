@@ -9,7 +9,7 @@ namespace QBRssEditor.Services
     class JournalService : IMarkReadService
     {
         private static readonly string Path = "journal.json";
-        private Dictionary<string, bool> _data;
+        private readonly Dictionary<string, bool> _data;
         private readonly IQBitStatusService _qBitStatus;
         private readonly JsonSerializerSettings _settings;
         private readonly FileWriteWaiterService _writer;
@@ -25,7 +25,7 @@ namespace QBRssEditor.Services
             } 
             else
             {
-                this._data = null;
+                this._data = new Dictionary<string, bool>();
             }
         }
 
@@ -49,6 +49,8 @@ namespace QBRssEditor.Services
                 await this.SaveAsync();
             }
         }
+
+        public void Clear() => this._data.Clear();
 
         public void Attach(IEnumerable<RssItem> items)
         {

@@ -7,6 +7,8 @@ using System.Threading.Tasks;
 using System.Windows.Documents;
 using Newtonsoft.Json;
 using QBRssEditor.Model;
+using Microsoft.Extensions.DependencyInjection;
+using System.IO;
 
 namespace QBRssEditor.Services
 {
@@ -14,13 +16,16 @@ namespace QBRssEditor.Services
     {
         private readonly IQBitStatusService _qBitStatus;
         private readonly JsonSerializerSettings _settings;
-        private readonly FileWriteWaiterService _writer;
+        private readonly FileWriteWaiterService _waiter;
+        private readonly IServiceProvider _serviceProvider;
 
-        public OriginMarkReadService(IQBitStatusService qBitStatus, JsonSerializerSettings settings, FileWriteWaiterService writer)
+        public OriginMarkReadService(IQBitStatusService qBitStatus, JsonSerializerSettings settings, FileWriteWaiterService waiter,
+            IServiceProvider serviceProvider)
         {
             this._qBitStatus = qBitStatus;
             this._settings = settings;
-            this._writer = writer;
+            this._waiter = waiter;
+            this._serviceProvider = serviceProvider;
         }
 
         public void Attach(IEnumerable<RssItem> items)
@@ -32,7 +37,21 @@ namespace QBRssEditor.Services
         {
             if (!this._qBitStatus.IsRunning)
             {
-                
+                var states = await this._serviceProvider.GetRequiredService<RssItemsService>()
+                    .ListAsync();
+                foreach (var state in states)
+                {
+                    await this._waiter.WriteAsync(Task.Run(() =>
+                    {
+                        File.WriteAllText(
+                            state.File.FullName,
+                            JsonConvert.SerializeObject(state.Items, this._settings),
+                            Encoding.UTF8);
+                    }));
+                }
+                var journal = this._serviceProvider.GetRequiredService<JournalService>();
+                journal.Clear();
+                await journal.SaveAsync();
             }
         }
 

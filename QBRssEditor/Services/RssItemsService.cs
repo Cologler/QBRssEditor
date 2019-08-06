@@ -17,12 +17,12 @@ namespace QBRssEditor.Services
             this._qBitStatus = qBitStatus;
         }
 
-        public async Task<List<RssItem>> ListAsync()
+        public async Task<List<RssFileState>> ListAsync()
         {
-            var items = await RssFilesManager.Installed.ListAsync();
+            var items = await RssFileStatesManager.Installed.GetStatesAsync();
             foreach (var markReadService in this._markReadServices)
             {
-                markReadService.Attach(items);
+                markReadService.Attach(items.SelectMany(z => z.Items));
             }
             return items;
         }
