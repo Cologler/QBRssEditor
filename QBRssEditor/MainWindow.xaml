@@ -1,0 +1,74 @@
+﻿<Window x:Class="QBRssEditor.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:QBRssEditor"
+        mc:Ignorable="d"
+        Title="MainWindow" Height="450" Width="800">
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition />
+            <RowDefinition Height="Auto" />
+        </Grid.RowDefinitions>
+        
+        <Grid Margin="4">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
+                <RowDefinition />
+            </Grid.RowDefinitions>
+            
+            <TextBox x:Name="SearchBox"
+                     Text="{Binding SearchText, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+
+            <Grid Grid.Row="1"
+                  Margin="0,4,0,0">
+                
+                <CheckBox Content="include all"
+                          IsChecked="{Binding IsIncludeAll, Mode=TwoWay}" />
+                
+            </Grid>
+
+            <Grid Grid.Row="2"
+                  Margin="0,4,0,0">
+                <ListView ItemsSource="{Binding Items}"
+                          x:Name="ItemsListView">
+                    <ListView.ItemTemplate>
+                        <DataTemplate>
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="20" />
+                                    <ColumnDefinition />
+                                </Grid.ColumnDefinitions>
+                                
+                                <TextBlock Text="✅"
+                                           Visibility="{Binding IsReadFlagVisibility}"/>
+                                
+                                <TextBlock Text="{Binding Title}"
+                                           Grid.Column="1" />                                
+                            </Grid>
+                        </DataTemplate>
+                    </ListView.ItemTemplate>
+                    <ListView.ContextMenu>
+                        <ContextMenu>
+                            <MenuItem Header="Mark readed"
+                                      Click="MarkReadMenuItem_Click"/>
+                            <MenuItem Header="Open torrent url"
+                                      Click="OpenTorrentUrlMenuItem_Click" />
+                        </ContextMenu>
+                    </ListView.ContextMenu>
+                </ListView>
+            </Grid>
+        </Grid>
+
+        <Grid Grid.Row="1">
+            <StatusBar>
+                <TextBlock Text="total:"/>
+                <TextBlock Text="?" />
+                <Separator />
+                <TextBlock Text="?" />
+            </StatusBar>
+        </Grid>
+    </Grid>
+</Window>
