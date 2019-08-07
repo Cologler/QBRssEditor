@@ -36,27 +36,16 @@ namespace QBRssEditor
             set => this.DataContext = value;
         }
 
-        private void MarkReadMenuItem_Click(object sender, RoutedEventArgs e)
-        {
-            var items = this.ItemsListView.SelectedItems;
-            this.ViewModel.MarkReaded(items);
-        }
+        private void MarkReadMenuItem_Click(object sender, RoutedEventArgs e) => 
+            this.ViewModel.MarkReaded(this.ItemsListView.SelectedItems);
 
-        private void OpenTorrentUrlMenuItem_Click(object sender, RoutedEventArgs e)
-        {
-            var items = this.ItemsListView.SelectedItems;
-            this.ViewModel.OpenTorrentUrl(items);
-        }
+        private void OpenTorrentUrlMenuItem_Click(object sender, RoutedEventArgs e) => 
+            this.ViewModel.OpenTorrentUrl(this.ItemsListView.SelectedItems);
 
-        private void AsSearchTextMenuItem_Click(object sender, RoutedEventArgs e)
-        {
-            var items = this.ItemsListView.SelectedItems;
-            this.ViewModel.AsSearchText(items);
-        }
+        private void AsSearchTextMenuItem_Click(object sender, RoutedEventArgs e) => 
+            this.ViewModel.AsSearchText(this.ItemsListView.SelectedItems);
 
-        private void Flush_Click(object sender, RoutedEventArgs e)
-        {
-            this.ViewModel.Flush();
-        }
+        private async void Flush_Click(object sender, RoutedEventArgs e) => 
+            await this.ViewModel.FlushAsync();
     }
 }

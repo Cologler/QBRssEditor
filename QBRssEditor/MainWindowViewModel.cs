@@ -88,10 +88,10 @@ namespace QBRssEditor
                 this.FilterdCount = items.Length.ToString();
             }
 
-            this.UpdateItems(items);
+            this.Replace(items);
         }
 
-        private void UpdateItems(IEnumerable<RssItem> items)
+        private void Replace(IEnumerable<RssItem> items)
         {
             this.Items.Clear();
             foreach (var item in items)
@@ -157,11 +157,6 @@ namespace QBRssEditor
             var viewModel = items.OfType<ItemViewModel>().FirstOrDefault();
             if (viewModel == null) return;
             this.SearchText = viewModel.RssItem.Title ?? string.Empty;
-        }
-
-        public async void Flush()
-        {
-            await this.FlushAsync();
         }
 
         public async Task FlushAsync()
