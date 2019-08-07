@@ -20,6 +20,7 @@ namespace QBRssEditor
     {
         private string _searchText = null;
         private string _totalCount = "?";
+        private string _filterdCount;
         private readonly JournalService _journal;
         private readonly RssItemsService _rssItems;
 
@@ -64,31 +65,30 @@ namespace QBRssEditor
             await Task.Delay(300);
             if (text != this.SearchText) return;
 
-            var items = await this._rssItems.ListAsync();
-            var source = items.SelectMany(z => z.Items).AsEnumerable();
+            var states = await this._rssItems.ListAsync();
             if (text != this.SearchText) return;
+
+            var items = states.SelectMany(z => z.Items).ToArray();
 
             if (!this.IsIncludeAll)
             {
-                source = source.Where(z => !z.IsRead);
+                items = items.Where(z => !z.IsRead).ToArray();
             }
+            this.TotalCount = items.Length.ToString();
 
-            if (!string.IsNullOrEmpty(text))
+            var maxShowCount = 1000;
+            if (string.IsNullOrEmpty(text))
             {
-                source = source.Where(z => z.Title.IndexOf(text, StringComparison.OrdinalIgnoreCase) >= 0);
-            }
-            var result = source.ToList();
-
-            if (string.IsNullOrEmpty(text) && result.Count > 300)
-            {
-                this.TotalCount = $"300/{result.Count}";
+                items = items.Take(maxShowCount).ToArray();
+                this.FilterdCount = items.Length > maxShowCount ? $"{maxShowCount}..." : items.Length.ToString();
             }
             else
             {
-                this.TotalCount = result.Count.ToString();
+                items = items.Where(z => z.Title.IndexOf(text, StringComparison.OrdinalIgnoreCase) >= 0).ToArray();
+                this.FilterdCount = items.Length.ToString();
             }
-            
-            this.UpdateItems(string.IsNullOrEmpty(text) ? result.Take(300) : result);
+
+            this.UpdateItems(items);
         }
 
         private void UpdateItems(IEnumerable<RssItem> items)
@@ -170,12 +170,18 @@ namespace QBRssEditor
             this.OnPropertyChanged(nameof(this.JournalCount));
         }
 
-        public int JournalCount => this._journal.Count;
-
         public string TotalCount
         {
             get => this._totalCount;
             set => this.ChangeValue(ref this._totalCount, value);
         }
+
+        public string FilterdCount
+        {
+            get => this._filterdCount;
+            set => this.ChangeValue(ref this._filterdCount, value);
+        }
+
+        public string JournalCount => this._journal.Count.ToString();
     }
 }

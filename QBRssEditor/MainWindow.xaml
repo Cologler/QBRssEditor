@@ -70,6 +70,9 @@
                 <TextBlock Text="total:"/>
                 <TextBlock Text="{Binding TotalCount}" />
                 <Separator />
+                <TextBlock Text="filterd:" />
+                <TextBlock Text="{Binding FilterdCount}" />
+                <Separator />
                 <TextBlock Text="Journal:" />
                 <TextBlock Text="{Binding JournalCount}" />
                 <Button Content="flush"
