@@ -9,6 +9,7 @@ using System.Threading.Tasks;
 using System.Windows;
 using Microsoft.Extensions.DependencyInjection;
 using Newtonsoft.Json;
+using QBRssEditor.Model;
 using QBRssEditor.Services;
 
 namespace QBRssEditor
@@ -40,6 +41,7 @@ namespace QBRssEditor
                 .AddSingleton<IMarkReadService>(ioc => ioc.GetRequiredService<OriginMarkReadService>())
                 .AddSingleton<FileSessionService>()
                 .AddTransient<MainWindowViewModel>()
+                .AddTransient<QBRssDataContext>()
                 .BuildServiceProvider();
         }
 

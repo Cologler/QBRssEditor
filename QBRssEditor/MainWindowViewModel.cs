@@ -68,7 +68,7 @@ namespace QBRssEditor
             var states = await this._rssItems.ListAsync();
             if (text != this.SearchText) return;
 
-            var items = states.SelectMany(z => z.Items).ToArray();
+            var items = states.ToArray();
 
             if (!this.IsIncludeAll)
             {

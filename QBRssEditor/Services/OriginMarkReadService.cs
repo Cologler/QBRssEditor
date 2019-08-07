@@ -35,15 +35,14 @@ namespace QBRssEditor.Services
         {
             if (!this._qBitStatus.IsRunning)
             {
-                var states = await this._serviceProvider.GetRequiredService<RssItemsService>()
-                    .ListAsync();
-                foreach (var state in states)
+                await Task.Run(async () =>
                 {
-                    await Task.Run(() => this._jsonService.Dump(state.File.FullName, state.Items));
-                }
-                var journal = this._serviceProvider.GetRequiredService<JournalService>();
-                journal.Clear();
-                await journal.SaveAsync();
+                    var context = this._serviceProvider.GetRequiredService<RssItemsService>().GetLoadedDataContext();
+                    context.SaveChanges();
+                    var journal = this._serviceProvider.GetRequiredService<JournalService>();
+                    journal.Clear();
+                    await journal.SaveAsync();
+                });
             }
         }
 

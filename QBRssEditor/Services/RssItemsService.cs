@@ -1,30 +1,38 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.Extensions.DependencyInjection;
 using QBRssEditor.Model;
 
 namespace QBRssEditor.Services
 {
     class RssItemsService
     {
+        private readonly IServiceProvider _serviceProvider;
         private readonly IEnumerable<IMarkReadService> _markReadServices;
         private readonly IQBitStatusService _qBitStatus;
 
-        public RssItemsService(IEnumerable<IMarkReadService> markReadServices, IQBitStatusService qBitStatus)
+        public RssItemsService(IServiceProvider serviceProvider, 
+            IEnumerable<IMarkReadService> markReadServices, IQBitStatusService qBitStatus)
         {
+            this._serviceProvider = serviceProvider;
             this._markReadServices = markReadServices;
             this._qBitStatus = qBitStatus;
         }
 
-        public async Task<List<RssFileState>> ListAsync()
+        public Task<List<RssItem>> ListAsync() => Task.Run(() => this.GetLoadedDataContext().Items.ToList());
+
+        public QBRssDataContext GetLoadedDataContext()
         {
-            var items = await RssFileStatesManager.Installed.GetStatesAsync();
+            var context = this._serviceProvider.GetRequiredService<QBRssDataContext>();
+            context.Load();
             foreach (var markReadService in this._markReadServices)
             {
-                markReadService.Attach(items.SelectMany(z => z.Items));
+                markReadService.Attach(context.Items);
             }
-            return items;
+            return context;
         }
 
         public void MarkReaded(IEnumerable<RssItem> items)
