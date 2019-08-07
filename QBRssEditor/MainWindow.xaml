@@ -59,6 +59,8 @@
                                       Click="OpenTorrentUrlMenuItem_Click" />
                             <MenuItem Header="As search text"
                                       Click="AsSearchTextMenuItem_Click" />
+                            <MenuItem Header="Copy to clipboard"
+                                      Click="CopyToClipboard_Click" />
                         </ContextMenu>
                     </ListView.ContextMenu>
                 </ListView>

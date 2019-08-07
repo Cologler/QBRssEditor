@@ -47,5 +47,8 @@ namespace QBRssEditor
 
         private async void Flush_Click(object sender, RoutedEventArgs e) => 
             await this.ViewModel.FlushAsync();
+
+        private void CopyToClipboard_Click(object sender, RoutedEventArgs e) =>
+            this.ViewModel.CopyToClipboard(this.ItemsListView.SelectedItems);
     }
 }

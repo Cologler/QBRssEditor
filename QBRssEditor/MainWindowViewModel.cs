@@ -159,6 +159,21 @@ namespace QBRssEditor
             this.SearchText = viewModel.RssItem.Title ?? string.Empty;
         }
 
+        public void CopyToClipboard(IList items)
+        {
+            var viewModel = items.OfType<ItemViewModel>().FirstOrDefault();
+            if (viewModel == null) return;
+            var title = viewModel.RssItem.Title;
+            try
+            {
+                Clipboard.SetText(title);
+            }
+            catch (Exception)
+            {
+                MessageBox.Show("Unable to copy to clipboard.");
+            }
+        }
+
         public async Task FlushAsync()
         {
             await this._rssItems.FlushAsync();
