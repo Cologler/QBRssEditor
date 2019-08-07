@@ -15,16 +15,14 @@ namespace QBRssEditor.Services
     class OriginMarkReadService : IMarkReadService
     {
         private readonly IQBitStatusService _qBitStatus;
-        private readonly JsonSerializerSettings _settings;
-        private readonly FileWriteWaiterService _waiter;
+        private readonly JsonService _jsonService;
         private readonly IServiceProvider _serviceProvider;
 
-        public OriginMarkReadService(IQBitStatusService qBitStatus, JsonSerializerSettings settings, FileWriteWaiterService waiter,
+        public OriginMarkReadService(IQBitStatusService qBitStatus, JsonService jsonService,
             IServiceProvider serviceProvider)
         {
             this._qBitStatus = qBitStatus;
-            this._settings = settings;
-            this._waiter = waiter;
+            this._jsonService = jsonService;
             this._serviceProvider = serviceProvider;
         }
 
@@ -41,13 +39,7 @@ namespace QBRssEditor.Services
                     .ListAsync();
                 foreach (var state in states)
                 {
-                    await this._waiter.WriteAsync(Task.Run(() =>
-                    {
-                        File.WriteAllText(
-                            state.File.FullName,
-                            JsonConvert.SerializeObject(state.Items, this._settings),
-                            new UTF8Encoding(false));
-                    }));
+                    await Task.Run(() => this._jsonService.Dump(state.File.FullName, state.Items));
                 }
                 var journal = this._serviceProvider.GetRequiredService<JournalService>();
                 journal.Clear();

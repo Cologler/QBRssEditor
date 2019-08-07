@@ -4,6 +4,7 @@ using System.Configuration;
 using System.Data;
 using System.Diagnostics;
 using System.Linq;
+using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
 using Microsoft.Extensions.DependencyInjection;
@@ -29,20 +30,22 @@ namespace QBRssEditor
                 {
                     Formatting = Formatting.Indented
                 })
+                .AddSingleton<Encoding>(new UTF8Encoding(false))
+                .AddSingleton<JsonService>()
                 .AddSingleton<IQBitStatusService, QBitStatusService>()
                 .AddSingleton<RssItemsService>()
                 .AddSingleton<JournalService>()
                 .AddSingleton<IMarkReadService>(ioc => ioc.GetRequiredService<JournalService>())
                 .AddSingleton<OriginMarkReadService>()
                 .AddSingleton<IMarkReadService>(ioc => ioc.GetRequiredService<OriginMarkReadService>())
-                .AddSingleton<FileWriteWaiterService>()
+                .AddSingleton<FileSessionService>()
                 .AddTransient<MainWindowViewModel>()
                 .BuildServiceProvider();
         }
 
         protected override void OnExit(ExitEventArgs e)
         {
-            ServiceProvider.GetRequiredService<FileWriteWaiterService>().WaitAll();
+            ServiceProvider.GetRequiredService<FileSessionService>().Dispose();
 
             base.OnExit(e);
         }

@@ -65,10 +65,11 @@
       <SubType>Designer</SubType>
     </ApplicationDefinition>
     <Compile Include="Model\RssFileStatesManager.cs" />
-    <Compile Include="Services\FileWriteWaiterService.cs" />
+    <Compile Include="Services\FileSessionService.cs" />
     <Compile Include="Services\IMarkReadService.cs" />
     <Compile Include="Services\IQBitStatusService.cs" />
     <Compile Include="Services\JournalService.cs" />
+    <Compile Include="Services\JsonService.cs" />
     <Compile Include="Services\OriginMarkReadService.cs" />
     <Compile Include="Services\QBitStatusService.cs" />
     <Compile Include="Services\RssItemsService.cs" />
