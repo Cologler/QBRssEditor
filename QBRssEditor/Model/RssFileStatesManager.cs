@@ -9,9 +9,7 @@ namespace QBRssEditor.Model
 {
     class RssFileStatesManager
     {
-        private readonly object _syncRoot = new object();
         private readonly DirectoryInfo _rootDir;
-        private Task<List<RssItem>> _task;
         private List<RssFileState> _states;
 
         RssFileStatesManager(string rootDir)
@@ -30,12 +28,6 @@ namespace QBRssEditor.Model
             return this._states;
         }
 
-        public async Task<List<RssItem>> ListAsync()
-        {
-            await this.LoadStatesAsync();
-            return this._states.SelectMany(z => z.Items).ToList();
-        }
-
         private List<RssFileState> GetRssFileStates()
         {
             return this._rootDir.GetFiles("*.json").Select(z =>
@@ -43,22 +35,6 @@ namespace QBRssEditor.Model
                 using (var text = z.OpenText())
                 {
                     return new RssFileState(z, JsonConvert.DeserializeObject<List<RssItem>>(text.ReadToEnd()));
-                }
-            }).ToList();
-        }
-
-        private List<RssItem> List()
-        {
-            if (!this._rootDir.Exists)
-            {
-                return Enumerable.Empty<RssItem>().ToList();
-            }
-
-            return this._rootDir.GetFiles("*.json").SelectMany(z =>
-            {
-                using (var text = z.OpenText())
-                {
-                    return JsonConvert.DeserializeObject<List<RssItem>>(text.ReadToEnd());
                 }
             }).ToList();
         }
