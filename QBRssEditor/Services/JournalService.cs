@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.IO;
+using System.Text;
 using System.Threading.Tasks;
 using Newtonsoft.Json;
 using QBRssEditor.Model;
@@ -32,7 +33,9 @@ namespace QBRssEditor.Services
         public int Count => this._data.Count;
 
         public Task SaveAsync() => 
-            this._writer.WriteAsync(Task.Run(() => File.WriteAllText(Path, JsonConvert.SerializeObject(this._data, this._settings))));
+            this._writer.WriteAsync(
+                Task.Run(() => 
+                    File.WriteAllText(Path, JsonConvert.SerializeObject(this._data, this._settings), new UTF8Encoding(false))));
 
         public void MarkReaded(IEnumerable<RssItem> items)
         {

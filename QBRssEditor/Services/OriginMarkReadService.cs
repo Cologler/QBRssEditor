@@ -46,7 +46,7 @@ namespace QBRssEditor.Services
                         File.WriteAllText(
                             state.File.FullName,
                             JsonConvert.SerializeObject(state.Items, this._settings),
-                            Encoding.UTF8);
+                            new UTF8Encoding(false));
                     }));
                 }
                 var journal = this._serviceProvider.GetRequiredService<JournalService>();
