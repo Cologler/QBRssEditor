@@ -13,6 +13,7 @@ using QBRssEditor.Services;
 using Microsoft.Extensions.DependencyInjection;
 using System.Diagnostics;
 using System.Windows;
+using System.Text.RegularExpressions;
 
 namespace QBRssEditor
 {
@@ -84,7 +85,11 @@ namespace QBRssEditor
             }
             else
             {
-                items = items.Where(z => z.Title.IndexOf(text, StringComparison.OrdinalIgnoreCase) >= 0).ToArray();
+                var any = ".";
+                var regex = new Regex(
+                    Regex.Escape(text).Replace("\\*", any + "*").Replace("\\?", any), RegexOptions.IgnoreCase
+                );
+                items = items.Where(z => regex.IsMatch(z.Title)).ToArray();
                 this.FilterdCount = items.Length.ToString();
             }
 
