@@ -168,6 +168,7 @@ namespace QBRssEditor
             this.KeywordItems.Clear();
             this._keywordEmitters
                 .SelectMany(z => z.GetKeywords(viewModel.RssItem.Title))
+                .Distinct()
                 .Select(z => new KeywordItemViewModel { Header = z })
                 .ToList()
                 .ForEach(this.KeywordItems.Add);
