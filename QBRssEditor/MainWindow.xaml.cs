@@ -42,13 +42,37 @@ namespace QBRssEditor
         private void OpenTorrentUrlMenuItem_Click(object sender, RoutedEventArgs e) => 
             this.ViewModel.OpenTorrentUrl(this.ItemsListView.SelectedItems);
 
-        private void AsSearchTextMenuItem_Click(object sender, RoutedEventArgs e) => 
-            this.ViewModel.AsSearchText(this.ItemsListView.SelectedItems);
-
         private async void Flush_Click(object sender, RoutedEventArgs e) => 
             await this.ViewModel.FlushAsync();
 
-        private void CopyToClipboard_Click(object sender, RoutedEventArgs e) =>
-            this.ViewModel.CopyToClipboard(this.ItemsListView.SelectedItems);
+        private void ListViewMenuItem_ContextMenuOpening(object sender, ContextMenuEventArgs e) => 
+            this.ViewModel.OpeningCopy(this.ItemsListView.SelectedItems);
+
+        private void Copy_Click(object sender, RoutedEventArgs e)
+        {
+            var viewModel = ((FrameworkElement)e.OriginalSource).DataContext as MainWindowViewModel.CopyItemViewModel;
+            var header = viewModel?.Header;
+            if (!string.IsNullOrEmpty(header))
+            {
+                try
+                {
+                    Clipboard.SetText(header);
+                }
+                catch (Exception)
+                {
+                    MessageBox.Show("Unable to copy to clipboard.");
+                }
+            }
+        }
+
+        private void Search_Click(object sender, RoutedEventArgs e)
+        {
+            var viewModel = ((FrameworkElement)e.OriginalSource).DataContext as MainWindowViewModel.CopyItemViewModel;
+            var header = viewModel?.Header;
+            if (!string.IsNullOrEmpty(header))
+            {
+                this.ViewModel.SearchText = header;
+            }
+        }
     }
 }

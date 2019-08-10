@@ -34,7 +34,8 @@
             <Grid Grid.Row="2"
                   Margin="0,4,0,0">
                 <ListView ItemsSource="{Binding Items}"
-                          x:Name="ItemsListView">
+                          x:Name="ItemsListView"
+                          ContextMenuOpening="ListViewMenuItem_ContextMenuOpening">
                     <ListView.ItemTemplate>
                         <DataTemplate>
                             <Grid>
@@ -44,7 +45,7 @@
                                 </Grid.ColumnDefinitions>
                                 
                                 <TextBlock Text="✅"
-                                           Visibility="{Binding IsReadFlagVisibility}"/>
+                                           Visibility="{Binding ReadFlagVisibility}"/>
                                 
                                 <TextBlock Text="{Binding Title}"
                                            Grid.Column="1" />                                
@@ -57,10 +58,26 @@
                                       Click="MarkReadMenuItem_Click"/>
                             <MenuItem Header="Open torrent url"
                                       Click="OpenTorrentUrlMenuItem_Click" />
-                            <MenuItem Header="As search text"
-                                      Click="AsSearchTextMenuItem_Click" />
-                            <MenuItem Header="Copy to clipboard"
-                                      Click="CopyToClipboard_Click" />
+                            <MenuItem ItemsSource="{Binding CopyItems}"
+                                      Header="Search"
+                                      Click="Search_Click">
+                                <MenuItem.ItemTemplate>
+                                    <DataTemplate>
+                                        <TextBlock Text="{Binding Header}"
+                                                   Visibility="{Binding Visibility}" />
+                                    </DataTemplate>
+                                </MenuItem.ItemTemplate>
+                            </MenuItem>
+                            <MenuItem ItemsSource="{Binding CopyItems}"
+                                      Header="Copy"
+                                      Click="Copy_Click">
+                                <MenuItem.ItemTemplate>
+                                    <DataTemplate>
+                                        <TextBlock Text="{Binding Header}"
+                                                   Visibility="{Binding Visibility}"/>
+                                    </DataTemplate>
+                                </MenuItem.ItemTemplate>
+                            </MenuItem>
                         </ContextMenu>
                     </ListView.ContextMenu>
                 </ListView>
