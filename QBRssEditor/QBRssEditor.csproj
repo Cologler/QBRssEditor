@@ -70,7 +70,11 @@
     <Compile Include="Services\IQBitStatusService.cs" />
     <Compile Include="Services\JournalService.cs" />
     <Compile Include="Services\JsonService.cs" />
+    <Compile Include="Services\KeywordEmitter\FirstElementKeywordEmitter.cs" />
     <Compile Include="Services\KeywordEmitter\IKeywordEmitter.cs" />
+    <Compile Include="Services\KeywordEmitter\MovieKeywordEmitter.cs" />
+    <Compile Include="Services\KeywordEmitter\OriginKeywordEmitter.cs" />
+    <Compile Include="Services\KeywordEmitter\SeriesKeywordEmitter.cs" />
     <Compile Include="Services\OriginMarkReadService.cs" />
     <Compile Include="Services\QBitStatusService.cs" />
     <Compile Include="Services\RssItemsService.cs" />
