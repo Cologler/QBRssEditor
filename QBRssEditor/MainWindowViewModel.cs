@@ -14,6 +14,7 @@ using Microsoft.Extensions.DependencyInjection;
 using System.Diagnostics;
 using System.Windows;
 using System.Text.RegularExpressions;
+using QBRssEditor.Services.KeywordEmitter;
 
 namespace QBRssEditor
 {
@@ -24,15 +25,16 @@ namespace QBRssEditor
         private string _filterdCount;
         private readonly JournalService _journal;
         private readonly RssItemsService _rssItems;
+        private readonly IEnumerable<IKeywordEmitter> _keywordEmitters;
         private readonly List<Func<RssItem, string>> _copyItemFactorys = new List<Func<RssItem, string>>();
 
         public event PropertyChangedEventHandler PropertyChanged;
 
-        public MainWindowViewModel(JournalService journal, RssItemsService rssItems)
+        public MainWindowViewModel(JournalService journal, RssItemsService rssItems, IEnumerable<IKeywordEmitter> keywordEmitters)
         {
             this._journal = journal;
             this._rssItems = rssItems;
-
+            this._keywordEmitters = keywordEmitters;
             this._copyItemFactorys.Add(z => z.Title);
             var regex1 = new Regex("^(.*)\\.\\d{4}\\.(.*)$"); // *.2019.*
             this._copyItemFactorys.Add(z =>
@@ -58,6 +60,16 @@ namespace QBRssEditor
             this._copyItemFactorys.Add(z =>
             {
                 var match = regex3.Match(z.Title);
+                if (match.Success)
+                {
+                    return match.Groups[1].Value;
+                }
+                return null;
+            });
+            var regex4 = new Regex("^(.*)【\\d{1,3}】(.*)$", RegexOptions.IgnoreCase); // *【01】*
+            this._copyItemFactorys.Add(z =>
+            {
+                var match = regex4.Match(z.Title);
                 if (match.Success)
                 {
                     return match.Groups[1].Value;
@@ -195,13 +207,12 @@ namespace QBRssEditor
             var viewModel = items.OfType<ItemViewModel>().FirstOrDefault();
             if (viewModel == null) return;
 
-            this.CopyItems.Clear();
-            this._copyItemFactorys
-                .Select(z => z(viewModel.RssItem))
-                .Where(z => z != null)
-                .Select(z => new CopyItemViewModel { Header = z })
+            this.KeywordItems.Clear();
+            this._keywordEmitters
+                .SelectMany(z => z.GetKeywords(viewModel.RssItem.Title))
+                .Select(z => new KeywordItemViewModel { Header = z })
                 .ToList()
-                .ForEach(this.CopyItems.Add);
+                .ForEach(this.KeywordItems.Add);
         }
 
         public async Task FlushAsync()
@@ -224,9 +235,9 @@ namespace QBRssEditor
 
         public string JournalCount => this._journal.Count.ToString();
 
-        public ObservableCollection<CopyItemViewModel> CopyItems { get; } = new ObservableCollection<CopyItemViewModel>();
+        public ObservableCollection<KeywordItemViewModel> KeywordItems { get; } = new ObservableCollection<KeywordItemViewModel>();
 
-        public class CopyItemViewModel
+        public class KeywordItemViewModel
         {
             public string Header { get; set; }
         }

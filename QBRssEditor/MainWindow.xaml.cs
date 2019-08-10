@@ -50,7 +50,7 @@ namespace QBRssEditor
 
         private void Copy_Click(object sender, RoutedEventArgs e)
         {
-            var viewModel = ((FrameworkElement)e.OriginalSource).DataContext as MainWindowViewModel.CopyItemViewModel;
+            var viewModel = ((FrameworkElement)e.OriginalSource).DataContext as MainWindowViewModel.KeywordItemViewModel;
             var header = viewModel?.Header;
             if (!string.IsNullOrEmpty(header))
             {
@@ -67,7 +67,7 @@ namespace QBRssEditor
 
         private void Search_Click(object sender, RoutedEventArgs e)
         {
-            var viewModel = ((FrameworkElement)e.OriginalSource).DataContext as MainWindowViewModel.CopyItemViewModel;
+            var viewModel = ((FrameworkElement)e.OriginalSource).DataContext as MainWindowViewModel.KeywordItemViewModel;
             var header = viewModel?.Header;
             if (!string.IsNullOrEmpty(header))
             {

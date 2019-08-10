@@ -58,23 +58,21 @@
                                       Click="MarkReadMenuItem_Click"/>
                             <MenuItem Header="Open torrent url"
                                       Click="OpenTorrentUrlMenuItem_Click" />
-                            <MenuItem ItemsSource="{Binding CopyItems}"
+                            <MenuItem ItemsSource="{Binding KeywordItems}"
                                       Header="Search"
                                       Click="Search_Click">
                                 <MenuItem.ItemTemplate>
                                     <DataTemplate>
-                                        <TextBlock Text="{Binding Header}"
-                                                   Visibility="{Binding Visibility}" />
+                                        <TextBlock Text="{Binding Header}" />
                                     </DataTemplate>
                                 </MenuItem.ItemTemplate>
                             </MenuItem>
-                            <MenuItem ItemsSource="{Binding CopyItems}"
+                            <MenuItem ItemsSource="{Binding KeywordItems}"
                                       Header="Copy"
                                       Click="Copy_Click">
                                 <MenuItem.ItemTemplate>
                                     <DataTemplate>
-                                        <TextBlock Text="{Binding Header}"
-                                                   Visibility="{Binding Visibility}"/>
+                                        <TextBlock Text="{Binding Header}" />
                                     </DataTemplate>
                                 </MenuItem.ItemTemplate>
                             </MenuItem>
