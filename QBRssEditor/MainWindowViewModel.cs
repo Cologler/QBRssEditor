@@ -26,7 +26,6 @@ namespace QBRssEditor
         private readonly JournalService _journal;
         private readonly RssItemsService _rssItems;
         private readonly IEnumerable<IKeywordEmitter> _keywordEmitters;
-        private readonly List<Func<RssItem, string>> _copyItemFactorys = new List<Func<RssItem, string>>();
 
         public event PropertyChangedEventHandler PropertyChanged;
 
@@ -35,47 +34,6 @@ namespace QBRssEditor
             this._journal = journal;
             this._rssItems = rssItems;
             this._keywordEmitters = keywordEmitters;
-            this._copyItemFactorys.Add(z => z.Title);
-            var regex1 = new Regex("^(.*)\\.\\d{4}\\.(.*)$"); // *.2019.*
-            this._copyItemFactorys.Add(z =>
-            {
-                var match = regex1.Match(z.Title);
-                if (match.Success)
-                {
-                    return match.Groups[1].Value;
-                }
-                return null;
-            });
-            var regex2 = new Regex("^(.*)\\.(ep\\d{1,3}|s\\d{1,3}e\\d{1,3})\\.(.*)$", RegexOptions.IgnoreCase); // *.ep1.*
-            this._copyItemFactorys.Add(z =>
-            {
-                var match = regex2.Match(z.Title);
-                if (match.Success)
-                {
-                    return match.Groups[1].Value;
-                }
-                return null;
-            });
-            var regex3 = new Regex("^(.*)\\[\\d{1,3}\\](.*)$", RegexOptions.IgnoreCase); // *[01]*
-            this._copyItemFactorys.Add(z =>
-            {
-                var match = regex3.Match(z.Title);
-                if (match.Success)
-                {
-                    return match.Groups[1].Value;
-                }
-                return null;
-            });
-            var regex4 = new Regex("^(.*)【\\d{1,3}】(.*)$", RegexOptions.IgnoreCase); // *【01】*
-            this._copyItemFactorys.Add(z =>
-            {
-                var match = regex4.Match(z.Title);
-                if (match.Success)
-                {
-                    return match.Groups[1].Value;
-                }
-                return null;
-            });
         }
 
         void OnPropertyChanged([CallerMemberName] string propertyName = "") =>
