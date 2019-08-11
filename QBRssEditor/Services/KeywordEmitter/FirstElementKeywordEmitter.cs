@@ -5,8 +5,7 @@ namespace QBRssEditor.Services.KeywordEmitter
 {
     class FirstElementKeywordEmitter : IKeywordEmitter
     {
-        private static readonly Regex DotRegex = new Regex(
-            "^([^.]*).", RegexOptions.IgnoreCase); // *.*
+        private static readonly Regex DotRegex = new Regex("^([^.]*)\\."); // *.*
 
         public IEnumerable<string> GetKeywords(string title)
         {

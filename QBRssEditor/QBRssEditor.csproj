@@ -74,6 +74,7 @@
     <Compile Include="Services\KeywordEmitter\IKeywordEmitter.cs" />
     <Compile Include="Services\KeywordEmitter\MovieKeywordEmitter.cs" />
     <Compile Include="Services\KeywordEmitter\OriginKeywordEmitter.cs" />
+    <Compile Include="Services\KeywordEmitter\PartsKeywordEmitter.cs" />
     <Compile Include="Services\KeywordEmitter\SeriesKeywordEmitter.cs" />
     <Compile Include="Services\OriginMarkReadService.cs" />
     <Compile Include="Services\QBitStatusService.cs" />

@@ -22,12 +22,9 @@ namespace QBRssEditor
     {
         public static IServiceProvider ServiceProvider { get; private set; }
 
-        protected override void OnStartup(StartupEventArgs e)
+        internal static IServiceProvider CreateServiceProvider()
         {
-            base.OnStartup(e);
-
-            Debug.Assert(ServiceProvider == null);
-            ServiceProvider = new ServiceCollection()
+            return new ServiceCollection()
                 .AddSingleton(new JsonSerializerSettings()
                 {
                     Formatting = Formatting.Indented
@@ -47,7 +44,16 @@ namespace QBRssEditor
                 .AddSingleton<IKeywordEmitter, MovieKeywordEmitter>()
                 .AddSingleton<IKeywordEmitter, SeriesKeywordEmitter>()
                 .AddSingleton<IKeywordEmitter, FirstElementKeywordEmitter>()
+                .AddSingleton<IKeywordEmitter, PartsKeywordEmitter>()
                 .BuildServiceProvider();
+        }
+
+        protected override void OnStartup(StartupEventArgs e)
+        {
+            base.OnStartup(e);
+
+            Debug.Assert(ServiceProvider == null);
+            ServiceProvider = CreateServiceProvider();
         }
 
         protected override void OnExit(ExitEventArgs e)

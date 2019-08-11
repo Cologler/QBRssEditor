@@ -5,6 +5,8 @@ VisualStudioVersion = 16.0.29123.88
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "QBRssEditor", "QBRssEditor\QBRssEditor.csproj", "{BAE85269-7449-417E-82BB-D1512991ADE0}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "QBRssEditor.Tests", "QBRssEditor.Tests\QBRssEditor.Tests.csproj", "{60E4423D-D035-47F4-A34A-3D2C59D1875A}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -15,6 +17,10 @@ Global
 		{BAE85269-7449-417E-82BB-D1512991ADE0}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{BAE85269-7449-417E-82BB-D1512991ADE0}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{BAE85269-7449-417E-82BB-D1512991ADE0}.Release|Any CPU.Build.0 = Release|Any CPU
+		{60E4423D-D035-47F4-A34A-3D2C59D1875A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{60E4423D-D035-47F4-A34A-3D2C59D1875A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{60E4423D-D035-47F4-A34A-3D2C59D1875A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{60E4423D-D035-47F4-A34A-3D2C59D1875A}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

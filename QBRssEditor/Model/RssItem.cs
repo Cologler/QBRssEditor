@@ -1,5 +1,5 @@
-﻿using System.Collections;
-using System.IO;
+﻿using System;
+using System.Collections;
 using System.Linq;
 using System.Runtime.Remoting.Contexts;
 using System.Text;
@@ -27,16 +27,6 @@ namespace QBRssEditor.Model
         public string TorrentUrl { get; set; }
 
         [JsonProperty("date")]
-        public string Date { get; set; }
-    }
-
-    class RssFile
-    {
-        public RssFile(string path)
-        {
-            this.File = new FileInfo(path);
-        }
-
-        public FileInfo File { get; }
+        public string Date { get; set; } 
     }
 }
