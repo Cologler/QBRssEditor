@@ -134,10 +134,12 @@ namespace QBRssEditor
             }
         }
 
-        public async void MarkReaded(IList items)
+        public async void MarkReaded(IList items) => await this.MarkReaded(items.OfType<ItemViewModel>().ToArray());
+
+        async Task MarkReaded(ItemViewModel[] viewModels)
         {
-            var viewModels = items.OfType<ItemViewModel>().ToArray();
             if (viewModels.Length == 0) return;
+
             var rssItems = viewModels.Select(z => z.RssItem).ToArray();
             this._rssItems.MarkReaded(rssItems);
             foreach (var viewModel in viewModels)
@@ -148,10 +150,12 @@ namespace QBRssEditor
             this.OnPropertyChanged(nameof(this.JournalCount));
         }
 
-        public void OpenTorrentUrl(IList items)
+        public async void OpenTorrentUrl(IList items)
         {
-            var rssItems = items.OfType<ItemViewModel>().Select(z => z.RssItem).ToArray();
-            if (rssItems.Length == 0) return;
+            var viewModels = items.OfType<ItemViewModel>().ToArray();
+            if (viewModels.Length == 0) return;
+
+            var rssItems = viewModels.Select(z => z.RssItem).ToArray();
             foreach (var item in rssItems)
             {
                 var url = item.TorrentUrl;
@@ -162,6 +166,7 @@ namespace QBRssEditor
                 }
                 this.OpeningUrl = string.Empty;
             }
+            await this.MarkReaded(viewModels);
         }
 
         public string OpeningUrl
