@@ -23,6 +23,7 @@ namespace QBRssEditor
         private string _searchText = null;
         private string _totalCount = "?";
         private string _filterdCount;
+        private string _openingUrl = string.Empty;
         private readonly JournalService _journal;
         private readonly RssItemsService _rssItems;
         private readonly IEnumerable<IKeywordEmitter> _keywordEmitters;
@@ -153,11 +154,20 @@ namespace QBRssEditor
             if (rssItems.Length == 0) return;
             foreach (var item in rssItems)
             {
+                var url = item.TorrentUrl;
+                this.OpeningUrl = url;
                 using (var proc = Process.Start(item.TorrentUrl))
                 {
                     proc.WaitForExit();
                 }
+                this.OpeningUrl = string.Empty;
             }
+        }
+
+        public string OpeningUrl
+        {
+            get => _openingUrl;
+            private set => this.ChangeValue(ref this._openingUrl, value);
         }
 
         public void OpeningCopy(IList items)

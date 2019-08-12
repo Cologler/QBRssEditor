@@ -94,6 +94,8 @@
                 <TextBlock Text="{Binding JournalCount}" />
                 <Button Content="flush"
                         Click="Flush_Click"/>
+                <Separator />
+                <TextBlock Text="{Binding OpeningUrl}" />
             </StatusBar>
         </Grid>
     </Grid>
