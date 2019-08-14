@@ -92,7 +92,7 @@
                 <Separator />
                 <TextBlock Text="Journal:" />
                 <TextBlock Text="{Binding JournalCount}" />
-                <Button Content="flush"
+                <Button Content="Flush"
                         Click="Flush_Click"/>
                 <Separator />
                 <TextBlock Text="{Binding OpeningUrl}" />

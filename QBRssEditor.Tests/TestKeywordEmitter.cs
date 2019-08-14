@@ -1,16 +1,28 @@
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using QBRssEditor.Services.KeywordEmitter;
+using Microsoft.Extensions.DependencyInjection;
+using System;
 using System.Linq;
+using System.Collections.Generic;
+using System.Collections;
 
 namespace QBRssEditor.Tests
 {
     [TestClass]
     public class TestKeywordEmitter
     {
+        private static IEnumerable<IKeywordEmitter> GetEmitters() =>
+            ServicesBuilder.CreateServiceProvider().GetRequiredService<IEnumerable<IKeywordEmitter>>();
+
+        private static List<string> GetKeywords(string title) =>
+            GetEmitters().SelectMany(z => z.GetKeywords(title)).ToList();
+
         [TestMethod]
         public void TestSeriesKeywordEmitter()
         {
-            var emitter = new SeriesKeywordEmitter();
+            CollectionAssert.Contains(
+                GetKeywords("推理剧场.Mystery.Theater.E62.中文字幕.1280×720.HDTVrip-拉风字幕组 .mp4【ciLi001.com】"),
+                "推理剧场.Mystery.Theater");
         }
 
         [TestMethod]
