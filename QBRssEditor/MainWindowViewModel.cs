@@ -15,6 +15,7 @@ using System.Diagnostics;
 using System.Windows;
 using System.Text.RegularExpressions;
 using QBRssEditor.Services.KeywordEmitter;
+using System.Threading;
 
 namespace QBRssEditor
 {
@@ -70,34 +71,61 @@ namespace QBRssEditor
             await Task.Delay(300);
             if (text != this.SearchText) return;
 
-            var states = await this._rssItems.ListAsync();
-            if (text != this.SearchText) return;
+            var fetch = new FetchState(text);
+            await fetch.FetchAsync(this._rssItems, this.IsIncludeAll, CancellationToken.None);
+            if (fetch.SearchText != this.SearchText) return;
+            this.TotalCount = fetch.TotalCount;
+            this.FilterdCount = fetch.FilterdCount;
+            this.Replace(fetch.Items);
+        }
 
-            var items = states.ToArray();
-
-            if (!this.IsIncludeAll)
+        class FetchState
+        {
+            public FetchState(string searchText)
             {
-                items = items.Where(z => !z.IsRead).ToArray();
-            }
-            this.TotalCount = items.Length.ToString();
-
-            var maxShowCount = 1000;
-            if (string.IsNullOrEmpty(text))
-            {
-                items = items.Take(maxShowCount).ToArray();
-                this.FilterdCount = items.Length > maxShowCount ? $"{maxShowCount}..." : items.Length.ToString();
-            }
-            else
-            {
-                var any = ".";
-                var regex = new Regex(
-                    Regex.Escape(text).Replace("\\*", any + "*").Replace("\\?", any), RegexOptions.IgnoreCase
-                );
-                items = items.Where(z => regex.IsMatch(z.Title)).ToArray();
-                this.FilterdCount = items.Length.ToString();
+                this.SearchText = searchText;
             }
 
-            this.Replace(items);
+            public string SearchText { get; }
+
+            public RssItem[] Items { get; private set; }
+
+            public string FilterdCount { get; private set; }
+
+            public string TotalCount { get; private set; }
+
+            public async Task FetchAsync(RssItemsService rssItemsService, bool isIncludeAll, CancellationToken token)
+            {
+                var states = await rssItemsService.ListAsync();
+                if (token.IsCancellationRequested) return;
+                this.Items = await Task.Run(() =>
+                {
+                    var items = states.ToArray();
+
+                    if (!isIncludeAll)
+                    {
+                        items = items.Where(z => !z.IsRead).ToArray();
+                    }
+                    this.TotalCount = items.Length.ToString();
+
+                    var maxShowCount = 1000;
+                    if (string.IsNullOrEmpty(this.SearchText))
+                    {
+                        items = items.Take(maxShowCount).OrderBy(z => z.Title).ToArray();
+                        this.FilterdCount = items.Length > maxShowCount ? $"{maxShowCount}..." : items.Length.ToString();
+                    }
+                    else
+                    {
+                        var any = ".";
+                        var regex = new Regex(
+                            Regex.Escape(this.SearchText).Replace("\\*", any + "*").Replace("\\?", any), RegexOptions.IgnoreCase
+                        );
+                        items = items.Where(z => regex.IsMatch(z.Title)).OrderBy(z => z.Title).ToArray();
+                        this.FilterdCount = items.Length.ToString();
+                    }
+                    return items;
+                });
+            }
         }
 
         private void Replace(IEnumerable<RssItem> items)
