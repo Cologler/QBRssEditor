@@ -33,6 +33,7 @@ namespace QBRssEditor
                 .AddSingleton<IKeywordEmitter, SeriesKeywordEmitter>()
                 .AddSingleton<IKeywordEmitter, FirstElementKeywordEmitter>()
                 .AddSingleton<IKeywordEmitter, PartsKeywordEmitter>()
+                .AddSingleton<GroupingService>()
                 .BuildServiceProvider();
         }
     }

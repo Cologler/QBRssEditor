@@ -25,17 +25,21 @@ namespace QBRssEditor
         private string _totalCount = "?";
         private string _filterdCount;
         private string _openingUrl = string.Empty;
+        private GroupViewModel _selectedGroup;
         private readonly JournalService _journal;
         private readonly RssItemsService _rssItems;
         private readonly IEnumerable<IKeywordEmitter> _keywordEmitters;
+        private readonly GroupingService _groupingService;
 
         public event PropertyChangedEventHandler PropertyChanged;
 
-        public MainWindowViewModel(JournalService journal, RssItemsService rssItems, IEnumerable<IKeywordEmitter> keywordEmitters)
+        public MainWindowViewModel(JournalService journal, RssItemsService rssItems, IEnumerable<IKeywordEmitter> keywordEmitters,
+            GroupingService groupingService)
         {
             this._journal = journal;
             this._rssItems = rssItems;
             this._keywordEmitters = keywordEmitters;
+            this._groupingService = groupingService;
         }
 
         void OnPropertyChanged([CallerMemberName] string propertyName = "") =>
@@ -59,6 +63,7 @@ namespace QBRssEditor
             {
                 if (this.ChangeValue(ref this._searchText, value))
                 {
+                    this.SelectedGroup = null;
                     this.OnSearchTextUpdate(value);
                 }
             }
@@ -71,12 +76,13 @@ namespace QBRssEditor
             await Task.Delay(300);
             if (text != this.SearchText) return;
 
-            var fetch = new FetchState(text);
-            await fetch.FetchAsync(this._rssItems, this.IsIncludeAll, CancellationToken.None);
-            if (fetch.SearchText != this.SearchText) return;
-            this.TotalCount = fetch.TotalCount;
-            this.FilterdCount = fetch.FilterdCount;
-            this.Replace(fetch.Items);
+            var state = new FetchState(text);
+            await state.FetchAsync(this._rssItems, this._groupingService, this.IsIncludeAll, CancellationToken.None);
+            if (state.SearchText != this.SearchText) return;
+            this.TotalCount = state.TotalCount;
+            this.FilterdCount = state.FilterdCount;
+            Replace(this.Groups, state.GroupsMap.Select(kvp => new GroupViewModel(kvp.Key, kvp.Value)).OrderBy(z => z.GroupName));
+            this.Replace(state.Items);
         }
 
         class FetchState
@@ -90,15 +96,18 @@ namespace QBRssEditor
 
             public RssItem[] Items { get; private set; }
 
+            public Dictionary<string, List<RssItem>> GroupsMap { get; private set; }
+
             public string FilterdCount { get; private set; }
 
             public string TotalCount { get; private set; }
 
-            public async Task FetchAsync(RssItemsService rssItemsService, bool isIncludeAll, CancellationToken token)
+            public async Task FetchAsync(RssItemsService rssItemsService, GroupingService groupingService,
+                bool isIncludeAll, CancellationToken token)
             {
                 var states = await rssItemsService.ListAsync();
                 if (token.IsCancellationRequested) return;
-                this.Items = await Task.Run(() =>
+                await Task.Run(() =>
                 {
                     var items = states.ToArray();
 
@@ -123,21 +132,57 @@ namespace QBRssEditor
                         items = items.Where(z => regex.IsMatch(z.Title)).OrderBy(z => z.Title).ToArray();
                         this.FilterdCount = items.Length.ToString();
                     }
-                    return items;
+                    this.Items = items;
+
+                    this.GroupsMap = groupingService.GetGroups(items);
                 });
             }
         }
 
-        private void Replace(IEnumerable<RssItem> items)
+        public class GroupViewModel
         {
-            this.Items.Clear();
+            public GroupViewModel(string groupName, IEnumerable<RssItem> items)
+            {
+                this.GroupName = groupName;
+                this.Items = items.ToArray();
+            }
+
+            public string GroupName { get; }
+
+            public string DisplayName => GroupName == string.Empty ? "<default>" : GroupName;
+
+            public RssItem[] Items { get; }
+        }
+
+        private void Replace(IEnumerable<RssItem> items) => Replace(this.Items, items.Select(z => new ItemViewModel(z)));
+
+        private static void Replace<T>(ObservableCollection<T> collection, IEnumerable<T> items)
+        {
+            collection.Clear();
             foreach (var item in items)
             {
-                this.Items.Add(new ItemViewModel(item));
+                collection.Add(item);
             }
         }
 
         public ObservableCollection<ItemViewModel> Items { get; } = new ObservableCollection<ItemViewModel>();
+
+        public ObservableCollection<GroupViewModel> Groups { get; } = new ObservableCollection<GroupViewModel>();
+
+        public GroupViewModel SelectedGroup
+        {
+            get => _selectedGroup;
+            set
+            {
+                if (this.ChangeValue(ref _selectedGroup, value))
+                {
+                    if (value != null)
+                    {
+                        this.Replace(value.Items);
+                    }
+                }
+            }
+        }
 
         public class ItemViewModel : INotifyPropertyChanged
         {

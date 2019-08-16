@@ -67,6 +67,7 @@
     <Compile Include="Model\QBRssDataContext.cs" />
     <Compile Include="ServicesBuilder.cs" />
     <Compile Include="Services\FileSessionService.cs" />
+    <Compile Include="Services\GroupingService.cs" />
     <Compile Include="Services\IMarkReadService.cs" />
     <Compile Include="Services\IQBitStatusService.cs" />
     <Compile Include="Services\JournalService.cs" />
