@@ -36,6 +36,7 @@ namespace QBRssEditor.Services
         {
             foreach (var item in items)
             {
+                this._data[item.TorrentUrl] = true;
                 this._data[item.Id] = true;
             }
         }
@@ -57,6 +58,11 @@ namespace QBRssEditor.Services
                 if (!item.IsRead)
                 {
                     item.IsRead = this._data.TryGetValue(item.Id, out var v) && v;
+                }
+
+                if (!item.IsRead)
+                {
+                    item.IsRead = this._data.TryGetValue(item.TorrentUrl, out var v) && v;
                 }
             }
         }
