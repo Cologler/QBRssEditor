@@ -81,8 +81,13 @@ namespace QBRssEditor
             if (state.SearchText != this.SearchText) return;
             this.TotalCount = state.TotalCount;
             this.FilterdCount = state.FilterdCount;
-            Replace(this.Groups, state.GroupsMap.Select(kvp => new GroupViewModel(kvp.Key, kvp.Value)).OrderBy(z => z.GroupName));
+
             this.Replace(state.Items);
+
+            var groups = new List<GroupViewModel>();
+            groups.Add(new GroupViewModel("<all>", state.Items));
+            groups.AddRange(state.GroupsMap.Select(kvp => new GroupViewModel(kvp.Key, kvp.Value)).OrderBy(z => z.GroupName));
+            Replace(this.Groups, groups);
         }
 
         class FetchState
