@@ -212,9 +212,13 @@ namespace QBRssEditor
             }
         }
 
-        public async void MarkReaded(IList items) => await this.MarkReaded(items.OfType<ItemViewModel>().ToArray());
+        public async void MarkReaded(IList items)
+        {
+            await this.MarkReadedAsync(items.OfType<ItemViewModel>().ToArray());
+            await this.MarkReadedAsync(items.OfType<GroupViewModel>().ToArray());
+        }
 
-        async Task MarkReaded(ItemViewModel[] viewModels)
+        async Task MarkReadedAsync(ItemViewModel[] viewModels)
         {
             if (viewModels.Length == 0) return;
 
@@ -223,6 +227,23 @@ namespace QBRssEditor
             foreach (var viewModel in viewModels)
             {
                 viewModel.Updated();
+            }
+            await this._rssItems.FlushAsync();
+            this.OnPropertyChanged(nameof(this.JournalCount));
+        }
+
+        async Task MarkReadedAsync(GroupViewModel[] viewModels)
+        {
+            if (viewModels.Length == 0) return;
+
+            var rssItems = viewModels.SelectMany(z => z.Items).ToArray();
+            this._rssItems.MarkReaded(rssItems);
+            if (viewModels.Contains(this.SelectedGroup))
+            {
+                foreach (var vm in this.Items)
+                {
+                    vm.Updated();
+                }
             }
             await this._rssItems.FlushAsync();
             this.OnPropertyChanged(nameof(this.JournalCount));
@@ -244,7 +265,7 @@ namespace QBRssEditor
                 }
                 this.OpeningUrl = string.Empty;
             }
-            await this.MarkReaded(viewModels);
+            await this.MarkReadedAsync(viewModels);
         }
 
         public string OpeningUrl

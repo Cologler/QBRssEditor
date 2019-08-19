@@ -36,7 +36,7 @@ namespace QBRssEditor
             set => this.DataContext = value;
         }
 
-        private void MarkReadMenuItem_Click(object sender, RoutedEventArgs e) => 
+        private void ItemMarkReadMenuItem_Click(object sender, RoutedEventArgs e) => 
             this.ViewModel.MarkReaded(this.ItemsListView.SelectedItems);
 
         private void OpenTorrentUrlMenuItem_Click(object sender, RoutedEventArgs e) => 
@@ -74,5 +74,8 @@ namespace QBRssEditor
                 this.ViewModel.SearchText = header;
             }
         }
+
+        private void GroupMarkReadMenuItem_Click(object sender, RoutedEventArgs e) => 
+            this.ViewModel.MarkReaded(this.GroupsListView.SelectedItems);
     }
 }

@@ -41,6 +41,7 @@
                 <Grid>
                     <ListView ItemsSource="{Binding Groups}"
                               SelectedItem="{Binding SelectedGroup, Mode=TwoWay}"
+                              x:Name="GroupsListView"
                               Width="240">
                         <ListView.ItemTemplate>
                             <DataTemplate>
@@ -49,6 +50,12 @@
                                 </Grid>
                             </DataTemplate>
                         </ListView.ItemTemplate>
+                        <ListView.ContextMenu>
+                            <ContextMenu>
+                                <MenuItem Header="Mark readed"
+                                          Click="GroupMarkReadMenuItem_Click"/>
+                            </ContextMenu>
+                        </ListView.ContextMenu>
                     </ListView>
                 </Grid>
                 
@@ -76,7 +83,7 @@
                         <ListView.ContextMenu>
                             <ContextMenu>
                                 <MenuItem Header="Mark readed"
-                                          Click="MarkReadMenuItem_Click" />
+                                          Click="ItemMarkReadMenuItem_Click" />
                                 <MenuItem Header="Open torrent url"
                                           Click="OpenTorrentUrlMenuItem_Click" />
                                 <MenuItem ItemsSource="{Binding KeywordItems}"
