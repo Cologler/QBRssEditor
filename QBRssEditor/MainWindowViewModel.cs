@@ -85,8 +85,11 @@ namespace QBRssEditor
             this.Replace(state.Items);
 
             var groups = new List<GroupViewModel>();
-            groups.Add(new GroupViewModel("<all>", state.Items));
-            groups.AddRange(state.GroupsMap.Select(kvp => new GroupViewModel(kvp.Key, kvp.Value)).OrderBy(z => z.GroupName));
+            if (state.Items.Length > 0)
+            {
+                groups.Add(new GroupViewModel("<all>", state.Items));
+                groups.AddRange(state.GroupsMap.Select(kvp => new GroupViewModel(kvp.Key, kvp.Value)).OrderBy(z => z.GroupName));
+            }
             Replace(this.Groups, groups);
         }
 
