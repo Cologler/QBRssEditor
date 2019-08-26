@@ -125,22 +125,16 @@ namespace QBRssEditor
                     }
                     this.TotalCount = items.Length.ToString();
 
-                    var maxShowCount = 1000;
-                    if (string.IsNullOrEmpty(this.SearchText))
-                    {
-                        items = items.Take(maxShowCount).OrderBy(z => z.Title).ToArray();
-                        this.FilterdCount = items.Length > maxShowCount ? $"{maxShowCount}..." : items.Length.ToString();
-                    }
-                    else
+                    if (!string.IsNullOrEmpty(this.SearchText))
                     {
                         var any = ".";
                         var regex = new Regex(
-                            Regex.Escape(this.SearchText).Replace("\\*", any + "*").Replace("\\?", any), RegexOptions.IgnoreCase
+                            Regex.Escape(this.SearchText.Trim()).Replace("\\*", any + "*").Replace("\\?", any), RegexOptions.IgnoreCase
                         );
-                        items = items.Where(z => regex.IsMatch(z.Title)).OrderBy(z => z.Title).ToArray();
-                        this.FilterdCount = items.Length.ToString();
+                        items = items.Where(z => regex.IsMatch(z.Title)).ToArray();
                     }
                     this.Items = items;
+                    this.FilterdCount = items.Length.ToString();
 
                     this.GroupsMap = groupingService.GetGroups(items);
                 });
