@@ -27,7 +27,6 @@ namespace QBRssEditor.Services
         public QBRssDataContext GetLoadedDataContext()
         {
             var context = this._serviceProvider.GetRequiredService<QBRssDataContext>();
-            context.Load();
             foreach (var markReadService in this._markReadServices)
             {
                 markReadService.Attach(context.Items);

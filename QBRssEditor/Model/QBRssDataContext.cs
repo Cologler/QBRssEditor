@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -13,32 +12,6 @@ using QBRssEditor.Services;
 
 namespace QBRssEditor.Model
 {
-    class QBRssDbSet : IEnumerable<RssItem>
-    {
-        private readonly Dictionary<string, List<RssItem>> _states = new Dictionary<string, List<RssItem>>();
-        private readonly JsonService _jsonService;
-
-        public QBRssDbSet(JsonService jsonService)
-        {
-            this._jsonService = jsonService;
-        }
-
-        public IEnumerator<RssItem> GetEnumerator() => this._states.SelectMany(z => z.Value).GetEnumerator();
-
-        IEnumerator IEnumerable.GetEnumerator() => this.GetEnumerator();
-
-        public void LoadFile(string file) => 
-            this._states[file] = this._jsonService.Load<List<RssItem>>(file);
-
-        public void SaveFile()
-        {
-            foreach (var item in this._states)
-            {
-                this._jsonService.Dump(item.Key, item.Value);
-            }            
-        }
-    }
-
     class QBRssDataContext
     {
         static readonly string QBRssRootPath = Path.Combine(
@@ -46,25 +19,36 @@ namespace QBRssEditor.Model
             "qBittorrent",
             "rss",
             "articles");
+        private readonly JsonService _jsonService;
+        private readonly List<QBRssDbSet> _items = new List<QBRssDbSet>();
 
         public QBRssDataContext(IServiceProvider serviceProvider)
         {
-            this.Items = new QBRssDbSet(serviceProvider.GetRequiredService<JsonService>());
+            this._jsonService = serviceProvider.GetRequiredService<JsonService>();
+            this.Load();
         }
 
-        public QBRssDbSet Items { get; }
+        public IEnumerable<RssItem> Items => this._items.SelectMany(z => z);
 
-        public void Load()
+        void Load()
         {
             if (Directory.Exists(QBRssRootPath))
             {
                 foreach (var path in Directory.GetFiles(QBRssRootPath, "*.json"))
                 {
-                    this.Items.LoadFile(path);
+                    var dbSet = new QBRssDbSet(this._jsonService, path);
+                    dbSet.LoadFile();
+                    this._items.Add(dbSet);
                 }
             }
         }
 
-        public void SaveChanges() => this.Items.SaveFile();
+        public void SaveChanges()
+        {
+            foreach (var item in this._items)
+            {
+                item.SaveFile();
+            }
+        }
     }
 }
