@@ -183,9 +183,8 @@
     <Compile Include="Services\KeywordEmitter\PartsKeywordEmitter.cs" />
     <Compile Include="Services\KeywordEmitter\SeriesKeywordEmitter.cs" />
     <Compile Include="Services\LocalDbHideItemService.cs" />
-    <Compile Include="Services\OriginMarkReadService.cs" />
     <Compile Include="Services\QBitStatusService.cs" />
-    <Compile Include="Services\RssItemsService.cs" />
+    <Compile Include="Services\ResourceItemsService.cs" />
     <Compile Include="Services\UpdateDbService.cs" />
     <Page Include="MainWindow.xaml">
       <Generator>MSBuild:Compile</Generator>

@@ -27,16 +27,16 @@ namespace QBRssEditor
         private string _filterdCount;
         private string _openingUrl = string.Empty;
         private GroupViewModel _selectedGroup;
-        private readonly RssItemsService _rssItems;
+        private readonly ResourceItemsService _itemsService;
         private readonly IEnumerable<IKeywordEmitter> _keywordEmitters;
         private readonly GroupingService _groupingService;
 
         public event PropertyChangedEventHandler PropertyChanged;
 
-        public MainWindowViewModel(RssItemsService rssItems, IEnumerable<IKeywordEmitter> keywordEmitters,
+        public MainWindowViewModel(ResourceItemsService itemsService, IEnumerable<IKeywordEmitter> keywordEmitters,
             GroupingService groupingService)
         {
-            this._rssItems = rssItems;
+            this._itemsService = itemsService;
             this._keywordEmitters = keywordEmitters;
             this._groupingService = groupingService;
         }
@@ -76,7 +76,7 @@ namespace QBRssEditor
             if (text != this.SearchText) return;
 
             var state = new FetchState(text);
-            await state.FetchAsync(this._rssItems, this._groupingService, this.IsIncludeAll, CancellationToken.None);
+            await state.FetchAsync(this._groupingService, this.IsIncludeAll, CancellationToken.None);
             if (state.SearchText != this.SearchText) return;
             this.TotalCount = state.TotalCount;
             this.FilterdCount = state.FilterdCount;
@@ -109,22 +109,15 @@ namespace QBRssEditor
 
             public string TotalCount { get; private set; }
 
-            private List<ResourceItem> GetAll()
-            {
-                using (var scope = App.ServiceProvider.CreateScope())
-                {
-                    var ctx = scope.ServiceProvider.GetRequiredService<LocalDbContext>();
-                    return ctx.Resources.ToList();
-                }
-            }
-
-            public async Task FetchAsync(RssItemsService rssItemsService, GroupingService groupingService,
+            public async Task FetchAsync(GroupingService groupingService,
                 bool isIncludeAll, CancellationToken token)
             {
-                await App.ServiceProvider.GetRequiredService<UpdateDbService>().UpdateDbAsync();
+                var states = await App.ServiceProvider.GetRequiredService<ResourceItemsService>()
+                    .ListAllAsync()
+                    .ConfigureAwait(false);
 
-                var states = await Task.Run(this.GetAll);
                 if (token.IsCancellationRequested) return;
+
                 await Task.Run(() =>
                 {
                     var items = states.ToArray();
@@ -147,7 +140,7 @@ namespace QBRssEditor
                     this.FilterdCount = items.Length.ToString();
 
                     this.GroupsMap = groupingService.GetGroups(items);
-                });
+                }).ConfigureAwait(false);
             }
         }
 
@@ -230,12 +223,11 @@ namespace QBRssEditor
             if (viewModels.Length == 0) return;
 
             var rssItems = viewModels.Select(z => z.Entity).ToArray();
-            this._rssItems.MarkReaded(rssItems);
+            this._itemsService.Hide(rssItems);
             foreach (var viewModel in viewModels)
             {
                 viewModel.Updated();
             }
-            await this._rssItems.FlushAsync();
             this.OnPropertyChanged(nameof(this.JournalCount));
         }
 
@@ -244,7 +236,7 @@ namespace QBRssEditor
             if (viewModels.Length == 0) return;
 
             var rssItems = viewModels.SelectMany(z => z.Items).ToArray();
-            this._rssItems.MarkReaded(rssItems);
+            this._itemsService.Hide(rssItems);
             if (viewModels.Contains(this.SelectedGroup))
             {
                 foreach (var vm in this.Items)
@@ -252,7 +244,6 @@ namespace QBRssEditor
                     vm.Updated();
                 }
             }
-            await this._rssItems.FlushAsync();
             this.OnPropertyChanged(nameof(this.JournalCount));
         }
 
@@ -293,12 +284,6 @@ namespace QBRssEditor
                 .Select(z => new KeywordItemViewModel { Header = z })
                 .ToList()
                 .ForEach(this.KeywordItems.Add);
-        }
-
-        public async Task FlushAsync()
-        {
-            await this._rssItems.FlushAsync();
-            this.OnPropertyChanged(nameof(this.JournalCount));
         }
 
         public string TotalCount

@@ -13,5 +13,7 @@ namespace QBRssEditor.LocalDb
         public string Url { get; set; }
 
         public bool IsHided { get; set; }
+
+        public bool IsSynced { get; set; }
     }
 }

@@ -42,8 +42,7 @@ namespace QBRssEditor
         private void OpenTorrentUrlMenuItem_Click(object sender, RoutedEventArgs e) => 
             this.ViewModel.OpenTorrentUrl(this.ItemsListView.SelectedItems);
 
-        private async void Flush_Click(object sender, RoutedEventArgs e) => 
-            await this.ViewModel.FlushAsync();
+        private async void Flush_Click(object sender, RoutedEventArgs e) { }
 
         private void ListViewMenuItem_ContextMenuOpening(object sender, ContextMenuEventArgs e) => 
             this.ViewModel.OpeningCopy(this.ItemsListView.SelectedItems);

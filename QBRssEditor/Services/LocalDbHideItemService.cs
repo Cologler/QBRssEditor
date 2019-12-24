@@ -18,10 +18,6 @@ namespace QBRssEditor.Services
             this._serviceProvider = serviceProvider;
         }
 
-        public void Attach(IEnumerable<RssItem> items) { }
-
-        public Task FlushAsync() => Task.CompletedTask;
-
         public void Hide(IEnumerable<ResourceItem> items)
         {
             using (var scope = this._serviceProvider.CreateScope())

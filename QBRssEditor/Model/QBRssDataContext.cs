@@ -63,7 +63,7 @@ namespace QBRssEditor.Model
                 var name = Path.GetFileNameWithoutExtension(path);
                 foreach (var item in this._jsonService.Load<List<RssItem>>(path))
                 {
-                    var id = $"{name}/{item.Id}";
+                    var id = $"{name}::{item.Id}";
                     if (!exists.ContainsKey(id))
                     {
                         yield return new ResourceItem
