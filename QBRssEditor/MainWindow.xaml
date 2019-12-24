@@ -86,8 +86,10 @@
                             <ContextMenu>
                                 <MenuItem Header="Mark readed"
                                           Click="ItemMarkReadMenuItem_Click" />
-                                <MenuItem Header="Open torrent url"
-                                          Click="OpenTorrentUrlMenuItem_Click" />
+                                <MenuItem Header="Open url"
+                                          Click="OpenUrlMenuItem_Click" />
+                                <MenuItem Header="Copy url"
+                                          Click="CopyUrlMenuItem_Click" />
                                 <MenuItem ItemsSource="{Binding KeywordItems}"
                                           Header="Search"
                                           Click="Search_Click">

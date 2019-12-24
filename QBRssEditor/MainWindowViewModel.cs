@@ -223,7 +223,7 @@ namespace QBRssEditor
             if (viewModels.Length == 0) return;
 
             var rssItems = viewModels.Select(z => z.Entity).ToArray();
-            this._itemsService.Hide(rssItems);
+            await this._itemsService.HideAsync(rssItems);
             foreach (var viewModel in viewModels)
             {
                 viewModel.Updated();
@@ -236,7 +236,7 @@ namespace QBRssEditor
             if (viewModels.Length == 0) return;
 
             var rssItems = viewModels.SelectMany(z => z.Items).ToArray();
-            this._itemsService.Hide(rssItems);
+            await this._itemsService.HideAsync(rssItems);
             if (viewModels.Contains(this.SelectedGroup))
             {
                 foreach (var vm in this.Items)
@@ -247,7 +247,7 @@ namespace QBRssEditor
             this.OnPropertyChanged(nameof(this.JournalCount));
         }
 
-        public async void OpenTorrentUrl(IList items)
+        public async void OpenUrl(IList items)
         {
             var viewModels = items.OfType<ItemViewModel>().ToArray();
             if (viewModels.Length == 0) return;
@@ -264,6 +264,25 @@ namespace QBRssEditor
                 this.OpeningUrl = string.Empty;
             }
             await this.MarkReadedAsync(viewModels);
+        }
+
+        public void CopyUrl(IList items)
+        {
+            var viewModels = items.OfType<ItemViewModel>().ToArray();
+            if (viewModels.Length == 0) return;
+
+            var rssItems = viewModels.Select(z => z.Entity)
+                .Select(z => z.Url)
+                .ToArray();
+            var text = string.Join("\r\n", rssItems);
+            try
+            {
+                Clipboard.SetText(text);
+            }
+            catch (Exception)
+            {
+                MessageBox.Show("unable to copy.");
+            }
         }
 
         public string OpeningUrl

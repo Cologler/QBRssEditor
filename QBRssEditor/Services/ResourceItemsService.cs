@@ -32,12 +32,15 @@ namespace QBRssEditor.Services
             }
         }
 
-        public void Hide(IEnumerable<ResourceItem> items)
+        public Task HideAsync(IEnumerable<ResourceItem> items)
         {
-            foreach (var markReadService in this._hideItemServices)
+            return Task.Run(() =>
             {
-                markReadService.Hide(items);
-            }
+                foreach (var markReadService in this._hideItemServices)
+                {
+                    markReadService.Hide(items);
+                }
+            });
         }
     }
 }

@@ -25,7 +25,12 @@ namespace QBRssEditor.Services
                 var ctx = scope.ServiceProvider.GetRequiredService<LocalDbContext>();
                 foreach (var item in items)
                 {
-                    ctx.Resources.Remove(ctx.Resources.Find(item.Id));
+                    item.IsHided = true;
+                    var entity = ctx.Resources.Find(item.Id);
+                    if (entity != null)
+                    {
+                        entity.IsHided = true;
+                    }
                 }
                 ctx.SaveChanges();
             }

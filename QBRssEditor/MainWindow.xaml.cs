@@ -39,9 +39,6 @@ namespace QBRssEditor
         private void ItemMarkReadMenuItem_Click(object sender, RoutedEventArgs e) => 
             this.ViewModel.MarkReaded(this.ItemsListView.SelectedItems);
 
-        private void OpenTorrentUrlMenuItem_Click(object sender, RoutedEventArgs e) => 
-            this.ViewModel.OpenTorrentUrl(this.ItemsListView.SelectedItems);
-
         private async void Flush_Click(object sender, RoutedEventArgs e) { }
 
         private void ListViewMenuItem_ContextMenuOpening(object sender, ContextMenuEventArgs e) => 
@@ -76,5 +73,13 @@ namespace QBRssEditor
 
         private void GroupMarkReadMenuItem_Click(object sender, RoutedEventArgs e) => 
             this.ViewModel.MarkReaded(this.GroupsListView.SelectedItems);
+
+        private void OpenUrlMenuItem_Click(object sender, RoutedEventArgs e) =>
+            this.ViewModel.OpenUrl(this.ItemsListView.SelectedItems);
+
+        private void CopyUrlMenuItem_Click(object sender, RoutedEventArgs e)
+        {
+
+        }
     }
 }
