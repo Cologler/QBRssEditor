@@ -109,11 +109,10 @@ namespace QBRssEditor
 
             public string TotalCount { get; private set; }
 
-            public async Task FetchAsync(GroupingService groupingService,
-                bool isIncludeAll, CancellationToken token)
+            public async Task FetchAsync(GroupingService groupingService, bool includeHided, CancellationToken token)
             {
                 var states = await App.ServiceProvider.GetRequiredService<ResourceItemsService>()
-                    .ListAllAsync()
+                    .ListAllAsync(includeHided)
                     .ConfigureAwait(false);
 
                 if (token.IsCancellationRequested) return;
@@ -121,11 +120,6 @@ namespace QBRssEditor
                 await Task.Run(() =>
                 {
                     var items = states.ToArray();
-
-                    if (!isIncludeAll)
-                    {
-                        items = items.Where(z => !z.IsHided).ToArray();
-                    }
                     this.TotalCount = items.Length.ToString();
 
                     if (!string.IsNullOrEmpty(this.SearchText))

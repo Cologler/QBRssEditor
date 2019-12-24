@@ -21,14 +21,17 @@ namespace QBRssEditor.Services
             this._hideItemServices = markReadServices;
         }
 
-        public async Task<List<ResourceItem>> ListAllAsync()
+        public async Task<List<ResourceItem>> ListAllAsync(bool includeHided)
         {
             await this._updateDbService.UpdateDbAsync().ConfigureAwait(false);
 
             using (var scope = App.ServiceProvider.CreateScope())
             {
                 var ctx = scope.ServiceProvider.GetRequiredService<LocalDbContext>();
-                return await ctx.Resources.ToListAsync().ConfigureAwait(false);
+                var query = includeHided
+                    ? ctx.Resources
+                    : ctx.Resources.Where(z => !z.IsHided);
+                return await query.ToListAsync().ConfigureAwait(false);
             }
         }
 
