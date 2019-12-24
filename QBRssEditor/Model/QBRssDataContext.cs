@@ -4,15 +4,18 @@ using System.IO;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Documents;
 using Microsoft.Extensions.DependencyInjection;
 using Newtonsoft.Json;
+using QBRssEditor.Abstractions;
+using QBRssEditor.LocalDb;
 using QBRssEditor.Services;
 
 namespace QBRssEditor.Model
 {
-    class QBRssDataContext
+    class QBRssDataContext : IResourceProvider
     {
         static readonly string QBRssRootPath = Path.Combine(
             Environment.ExpandEnvironmentVariables("%LOCALAPPDATA%"),
@@ -49,6 +52,41 @@ namespace QBRssEditor.Model
             {
                 item.SaveFile();
             }
+        }
+
+        public IEnumerable<ResourceItem> GetNotExists(IReadOnlyDictionary<string, ResourceItem> exists, CancellationToken cancellationToken)
+        {
+            IEnumerable<ResourceItem> SelectNotExists(string path)
+            {
+                cancellationToken.ThrowIfCancellationRequested();
+
+                var name = Path.GetFileNameWithoutExtension(path);
+                foreach (var item in this._jsonService.Load<List<RssItem>>(path))
+                {
+                    var id = $"{name}/{item.Id}";
+                    if (!exists.ContainsKey(id))
+                    {
+                        yield return new ResourceItem
+                        {
+                            Id = id,
+                            Title = item.Title,
+                            Description = item.Description,
+                            Url = item.TorrentUrl,
+                            IsHided = item.IsRead
+                        };
+                    }
+                }
+            }
+
+            cancellationToken.ThrowIfCancellationRequested();
+
+            if (Directory.Exists(QBRssRootPath))
+            {
+                return Directory.GetFiles(QBRssRootPath, "*.json")
+                    .SelectMany(SelectNotExists);
+            }
+
+            return Enumerable.Empty<ResourceItem>();
         }
     }
 }

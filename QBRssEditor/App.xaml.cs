@@ -10,6 +10,7 @@ using System.Threading.Tasks;
 using System.Windows;
 using Microsoft.Extensions.DependencyInjection;
 using Newtonsoft.Json;
+using QBRssEditor.LocalDb;
 using QBRssEditor.Model;
 using QBRssEditor.Services;
 using QBRssEditor.Services.KeywordEmitter;
@@ -39,6 +40,11 @@ namespace QBRssEditor
 
             Debug.Assert(ServiceProvider == null);
             ServiceProvider = ServicesBuilder.CreateServiceProvider();
+
+            using (var scope = ServiceProvider.CreateScope())
+            {
+                scope.ServiceProvider.GetRequiredService<LocalDbContext>().Database.EnsureCreated();
+            }
         }
 
         protected override void OnExit(ExitEventArgs e)

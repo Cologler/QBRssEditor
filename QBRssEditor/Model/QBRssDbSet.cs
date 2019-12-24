@@ -1,6 +1,8 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using QBRssEditor.Abstractions;
+using QBRssEditor.LocalDb;
 using QBRssEditor.Services;
 
 namespace QBRssEditor.Model

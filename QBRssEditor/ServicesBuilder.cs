@@ -1,7 +1,10 @@
 ﻿using System;
 using System.Text;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Newtonsoft.Json;
+using QBRssEditor.Abstractions;
+using QBRssEditor.LocalDb;
 using QBRssEditor.Model;
 using QBRssEditor.Services;
 using QBRssEditor.Services.KeywordEmitter;
@@ -20,6 +23,8 @@ namespace QBRssEditor
                 .AddSingleton<Encoding>(new UTF8Encoding(false))
                 .AddSingleton<JsonService>()
                 .AddSingleton<IQBitStatusService, QBitStatusService>()
+                .AddSingleton<UpdateDbService>()
+                .AddDbContext<LocalDbContext>(options => options.UseSqlite($"Data Source=localdb.sqlite3"))
                 .AddSingleton<RssItemsService>()
                 .AddSingleton<JournalService>()
                 .AddSingleton<IMarkReadService>(ioc => ioc.GetRequiredService<JournalService>())
@@ -28,6 +33,7 @@ namespace QBRssEditor
                 .AddSingleton<FileSessionService>()
                 .AddTransient<MainWindowViewModel>()
                 .AddTransient<QBRssDataContext>()
+                .AddTransient<IResourceProvider, QBRssDataContext>()
                 .AddSingleton<IKeywordEmitter, OriginKeywordEmitter>()
                 .AddSingleton<IKeywordEmitter, MovieKeywordEmitter>()
                 .AddSingleton<IKeywordEmitter, SeriesKeywordEmitter>()

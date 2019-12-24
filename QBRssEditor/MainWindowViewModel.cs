@@ -113,6 +113,8 @@ namespace QBRssEditor
             public async Task FetchAsync(RssItemsService rssItemsService, GroupingService groupingService,
                 bool isIncludeAll, CancellationToken token)
             {
+                await App.ServiceProvider.GetRequiredService<UpdateDbService>().UpdateDbAsync();
+
                 var states = await rssItemsService.ListAsync();
                 if (token.IsCancellationRequested) return;
                 await Task.Run(() =>
@@ -258,7 +260,7 @@ namespace QBRssEditor
                 this.OpeningUrl = url;
                 using (var proc = Process.Start(item.TorrentUrl))
                 {
-                    proc.WaitForExit();
+                    proc.WaitForExit(10 * 1000);
                 }
                 this.OpeningUrl = string.Empty;
             }
