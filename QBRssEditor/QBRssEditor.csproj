@@ -163,6 +163,7 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="Abstractions\IGroupable.cs" />
     <Compile Include="Abstractions\IResourceProvider.cs" />
     <Compile Include="EntityQuery\Class1.cs" />
     <Compile Include="LocalDb\LocalDbContext.cs" />
@@ -182,6 +183,7 @@
     <Compile Include="Services\KeywordEmitter\OriginKeywordEmitter.cs" />
     <Compile Include="Services\KeywordEmitter\PartsKeywordEmitter.cs" />
     <Compile Include="Services\KeywordEmitter\SeriesKeywordEmitter.cs" />
+    <Compile Include="Services\LocalDbHideItemService.cs" />
     <Compile Include="Services\OriginMarkReadService.cs" />
     <Compile Include="Services\QBitStatusService.cs" />
     <Compile Include="Services\RssItemsService.cs" />

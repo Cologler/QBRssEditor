@@ -9,10 +9,11 @@ using Newtonsoft.Json;
 using QBRssEditor.Model;
 using Microsoft.Extensions.DependencyInjection;
 using System.IO;
+using QBRssEditor.LocalDb;
 
 namespace QBRssEditor.Services
 {
-    class OriginMarkReadService : IMarkReadService
+    class OriginMarkReadService : IHideItemService
     {
         private readonly IQBitStatusService _qBitStatus;
         private readonly JsonService _jsonService;
@@ -46,12 +47,8 @@ namespace QBRssEditor.Services
             }
         }
 
-        public void MarkReaded(IEnumerable<RssItem> items)
+        public void Hide(IEnumerable<ResourceItem> _)
         {
-            foreach (var item in items)
-            {
-                item.IsRead = true;
-            }
         }
     }
 }

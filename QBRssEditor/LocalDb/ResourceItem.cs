@@ -1,8 +1,10 @@
-﻿namespace QBRssEditor.LocalDb
+﻿using QBRssEditor.Abstractions;
+
+namespace QBRssEditor.LocalDb
 {
-    class ResourceItem
+    class ResourceItem : IGroupable
     {
-        public string Id { get; set; } 
+        public string Id { get; set; }
 
         public string Title { get; set; }
 

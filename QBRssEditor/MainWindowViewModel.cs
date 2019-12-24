@@ -16,6 +16,7 @@ using System.Windows;
 using System.Text.RegularExpressions;
 using QBRssEditor.Services.KeywordEmitter;
 using System.Threading;
+using QBRssEditor.LocalDb;
 
 namespace QBRssEditor
 {
@@ -102,20 +103,29 @@ namespace QBRssEditor
 
             public string SearchText { get; }
 
-            public RssItem[] Items { get; private set; }
+            public ResourceItem[] Items { get; private set; }
 
-            public Dictionary<string, List<RssItem>> GroupsMap { get; private set; }
+            public Dictionary<string, List<ResourceItem>> GroupsMap { get; private set; }
 
             public string FilterdCount { get; private set; }
 
             public string TotalCount { get; private set; }
+
+            private List<ResourceItem> GetAll()
+            {
+                using (var scope = App.ServiceProvider.CreateScope())
+                {
+                    var ctx = scope.ServiceProvider.GetRequiredService<LocalDbContext>();
+                    return ctx.Resources.ToList();
+                }
+            }
 
             public async Task FetchAsync(RssItemsService rssItemsService, GroupingService groupingService,
                 bool isIncludeAll, CancellationToken token)
             {
                 await App.ServiceProvider.GetRequiredService<UpdateDbService>().UpdateDbAsync();
 
-                var states = await rssItemsService.ListAsync();
+                var states = await Task.Run(this.GetAll);
                 if (token.IsCancellationRequested) return;
                 await Task.Run(() =>
                 {
@@ -123,7 +133,7 @@ namespace QBRssEditor
 
                     if (!isIncludeAll)
                     {
-                        items = items.Where(z => !z.IsRead).ToArray();
+                        items = items.Where(z => !z.IsHided).ToArray();
                     }
                     this.TotalCount = items.Length.ToString();
 
@@ -145,7 +155,7 @@ namespace QBRssEditor
 
         public class GroupViewModel
         {
-            public GroupViewModel(string groupName, IEnumerable<RssItem> items)
+            public GroupViewModel(string groupName, IEnumerable<ResourceItem> items)
             {
                 this.GroupName = groupName;
                 this.Items = items.ToArray();
@@ -155,10 +165,10 @@ namespace QBRssEditor
 
             public string DisplayName => GroupName == string.Empty ? "<default>" : GroupName;
 
-            public RssItem[] Items { get; }
+            public ResourceItem[] Items { get; }
         }
 
-        private void Replace(IEnumerable<RssItem> items) => Replace(this.Items, items.Select(z => new ItemViewModel(z)));
+        private void Replace(IEnumerable<ResourceItem> items) => Replace(this.Items, items.Select(z => new ItemViewModel(z)));
 
         private static void Replace<T>(ObservableCollection<T> collection, IEnumerable<T> items)
         {
@@ -190,16 +200,16 @@ namespace QBRssEditor
 
         public class ItemViewModel : INotifyPropertyChanged
         {
-            public ItemViewModel(RssItem rssItem)
+            public ItemViewModel(ResourceItem rssItem)
             {
-                this.RssItem = rssItem;
+                this.Entity = rssItem;
             }
 
-            public RssItem RssItem { get; }
+            public ResourceItem Entity { get; }
 
-            public string Title => this.RssItem.Title;
+            public string Title => this.Entity.Title;
 
-            public Visibility ReadFlagVisibility => this.RssItem.IsRead
+            public Visibility ReadFlagVisibility => this.Entity.IsHided
                 ? Visibility.Visible
                 : Visibility.Hidden;
 
@@ -221,7 +231,7 @@ namespace QBRssEditor
         {
             if (viewModels.Length == 0) return;
 
-            var rssItems = viewModels.Select(z => z.RssItem).ToArray();
+            var rssItems = viewModels.Select(z => z.Entity).ToArray();
             this._rssItems.MarkReaded(rssItems);
             foreach (var viewModel in viewModels)
             {
@@ -253,12 +263,12 @@ namespace QBRssEditor
             var viewModels = items.OfType<ItemViewModel>().ToArray();
             if (viewModels.Length == 0) return;
 
-            var rssItems = viewModels.Select(z => z.RssItem).ToArray();
+            var rssItems = viewModels.Select(z => z.Entity).ToArray();
             foreach (var item in rssItems)
             {
-                var url = item.TorrentUrl;
+                var url = item.Url;
                 this.OpeningUrl = url;
-                using (var proc = Process.Start(item.TorrentUrl))
+                using (var proc = Process.Start(item.Url))
                 {
                     proc.WaitForExit(10 * 1000);
                 }
@@ -280,7 +290,7 @@ namespace QBRssEditor
 
             this.KeywordItems.Clear();
             this._keywordEmitters
-                .SelectMany(z => z.GetKeywords(viewModel.RssItem.Title))
+                .SelectMany(z => z.GetKeywords(viewModel.Entity.Title))
                 .Distinct()
                 .Select(z => new KeywordItemViewModel { Header = z })
                 .ToList()

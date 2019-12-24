@@ -3,11 +3,12 @@ using System.IO;
 using System.Text;
 using System.Threading.Tasks;
 using Newtonsoft.Json;
+using QBRssEditor.LocalDb;
 using QBRssEditor.Model;
 
 namespace QBRssEditor.Services
 {
-    class JournalService : IMarkReadService
+    class JournalService : IHideItemService
     {
         private static readonly string Path = "journal.json";
         private readonly Dictionary<string, bool> _data;
@@ -32,13 +33,8 @@ namespace QBRssEditor.Services
 
         public Task SaveAsync() => Task.Run(() => this._jsonService.Dump(Path, this._data));
 
-        public void MarkReaded(IEnumerable<RssItem> items)
+        public void Hide(IEnumerable<ResourceItem> _)
         {
-            foreach (var item in items)
-            {
-                this._data[item.TorrentUrl] = true;
-                this._data[item.Id] = true;
-            }
         }
 
         public async Task FlushAsync()

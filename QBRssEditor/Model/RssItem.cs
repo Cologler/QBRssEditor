@@ -6,6 +6,7 @@ using System.Text;
 using System.Windows.Documents;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Serialization;
+using QBRssEditor.Abstractions;
 
 namespace QBRssEditor.Model
 {

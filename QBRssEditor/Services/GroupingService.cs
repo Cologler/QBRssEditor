@@ -6,6 +6,7 @@ using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using System.Windows.Documents;
+using QBRssEditor.Abstractions;
 using QBRssEditor.Model;
 using QBRssEditor.Services.KeywordEmitter;
 
@@ -16,17 +17,17 @@ namespace QBRssEditor.Services
         private static readonly SeriesKeywordEmitter KeywordEmitter = new SeriesKeywordEmitter();
         public readonly Dictionary<string, string> _groups = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
 
-        public Dictionary<string, List<RssItem>> GetGroups(IEnumerable<RssItem> source)
+        public Dictionary<string, List<T>> GetGroups<T>(IEnumerable<T> source) where T : IGroupable
         {
-            var ret = new Dictionary<string, List<RssItem>>(StringComparer.OrdinalIgnoreCase);
+            var ret = new Dictionary<string, List<T>>(StringComparer.OrdinalIgnoreCase);
             var @new = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
-            var miss = new List<RssItem>();
+            var miss = new List<T>();
 
-            void Add(string key, RssItem value)
+            void Add(string key, T value)
             {
                 if (!ret.TryGetValue(key, out var ls))
                 {
-                    ls = new List<RssItem>();
+                    ls = new List<T>();
                     ret.Add(key, ls);
                 }
                 ls.Add(value);
