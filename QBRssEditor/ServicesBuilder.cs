@@ -26,8 +26,6 @@ namespace QBRssEditor
                 .AddSingleton<UpdateDbService>()
                 .AddDbContext<LocalDbContext>(options => options.UseSqlite($"Data Source=localdb.sqlite3"))
                 .AddSingleton<RssItemsService>()
-                .AddSingleton<JournalService>()
-                .AddSingleton<IHideItemService>(ioc => ioc.GetRequiredService<JournalService>())
                 .AddSingleton<OriginMarkReadService>()
                 .AddSingleton<IHideItemService>(ioc => ioc.GetRequiredService<OriginMarkReadService>())
                 .AddSingleton<IHideItemService, LocalDbHideItemService>()

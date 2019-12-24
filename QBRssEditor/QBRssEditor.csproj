@@ -175,7 +175,6 @@
     <Compile Include="Services\GroupingService.cs" />
     <Compile Include="Services\IMarkReadService.cs" />
     <Compile Include="Services\IQBitStatusService.cs" />
-    <Compile Include="Services\JournalService.cs" />
     <Compile Include="Services\JsonService.cs" />
     <Compile Include="Services\KeywordEmitter\FirstElementKeywordEmitter.cs" />
     <Compile Include="Services\KeywordEmitter\IKeywordEmitter.cs" />

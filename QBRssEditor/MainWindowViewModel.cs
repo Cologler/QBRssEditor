@@ -27,17 +27,15 @@ namespace QBRssEditor
         private string _filterdCount;
         private string _openingUrl = string.Empty;
         private GroupViewModel _selectedGroup;
-        private readonly JournalService _journal;
         private readonly RssItemsService _rssItems;
         private readonly IEnumerable<IKeywordEmitter> _keywordEmitters;
         private readonly GroupingService _groupingService;
 
         public event PropertyChangedEventHandler PropertyChanged;
 
-        public MainWindowViewModel(JournalService journal, RssItemsService rssItems, IEnumerable<IKeywordEmitter> keywordEmitters,
+        public MainWindowViewModel(RssItemsService rssItems, IEnumerable<IKeywordEmitter> keywordEmitters,
             GroupingService groupingService)
         {
-            this._journal = journal;
             this._rssItems = rssItems;
             this._keywordEmitters = keywordEmitters;
             this._groupingService = groupingService;
@@ -315,7 +313,7 @@ namespace QBRssEditor
             set => this.ChangeValue(ref this._filterdCount, value);
         }
 
-        public string JournalCount => this._journal.Count.ToString();
+        public string JournalCount => "0";
 
         public ObservableCollection<KeywordItemViewModel> KeywordItems { get; } = new ObservableCollection<KeywordItemViewModel>();
 

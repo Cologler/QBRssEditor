@@ -40,9 +40,6 @@ namespace QBRssEditor.Services
                 {
                     var context = this._serviceProvider.GetRequiredService<RssItemsService>().GetLoadedDataContext();
                     context.SaveChanges();
-                    var journal = this._serviceProvider.GetRequiredService<JournalService>();
-                    journal.Clear();
-                    await journal.SaveAsync();
                 });
             }
         }
