@@ -200,7 +200,7 @@ namespace QBRssEditor
 
             public string Title => this.Entity.Title;
 
-            public Visibility ReadFlagVisibility => this.Entity.IsHided
+            public Visibility ViewVisibility => this.Entity.IsHided
                 ? Visibility.Visible
                 : Visibility.Hidden;
 
@@ -208,7 +208,7 @@ namespace QBRssEditor
 
             public void Updated()
             {
-                this.PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(this.ReadFlagVisibility)));
+                this.PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(this.ViewVisibility)));
             }
         }
 

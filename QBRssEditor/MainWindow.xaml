@@ -75,7 +75,7 @@
                                     </Grid.ColumnDefinitions>
 
                                     <TextBlock Text="✅"
-                                               Visibility="{Binding ReadFlagVisibility}" />
+                                               Visibility="{Binding ViewVisibility}" />
 
                                     <TextBlock Text="{Binding Title}"
                                                Grid.Column="1" />
