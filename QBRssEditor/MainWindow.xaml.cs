@@ -77,9 +77,7 @@ namespace QBRssEditor
         private void OpenUrlMenuItem_Click(object sender, RoutedEventArgs e) =>
             this.ViewModel.OpenUrl(this.ItemsListView.SelectedItems);
 
-        private void CopyUrlMenuItem_Click(object sender, RoutedEventArgs e)
-        {
-
-        }
+        private void CopyUrlMenuItem_Click(object sender, RoutedEventArgs e) =>
+            this.ViewModel.CopyUrl(this.ItemsListView.SelectedItems);
     }
 }

@@ -126,7 +126,10 @@ namespace QBRssEditor
                     {
                         var any = ".";
                         var regex = new Regex(
-                            Regex.Escape(this.SearchText.Trim()).Replace("\\*", any + "*").Replace("\\?", any), RegexOptions.IgnoreCase
+                            Regex.Escape(this.SearchText.Trim())
+                                .Replace("\\*", any + "*")
+                                .Replace("\\?", any), 
+                            RegexOptions.IgnoreCase
                         );
                         items = items.Where(z => regex.IsMatch(z.Title)).ToArray();
                     }
