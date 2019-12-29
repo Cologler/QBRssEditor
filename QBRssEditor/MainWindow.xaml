@@ -36,6 +36,7 @@
             <Grid Grid.Row="2"
                   Margin="0,4,0,0">
                 <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="300" />
                     <ColumnDefinition Width="Auto" />
                     <ColumnDefinition />
                 </Grid.ColumnDefinitions>
@@ -43,8 +44,7 @@
                 <Grid>
                     <ListView ItemsSource="{Binding Groups}"
                               SelectedItem="{Binding SelectedGroup, Mode=TwoWay}"
-                              x:Name="GroupsListView"
-                              Width="240">
+                              x:Name="GroupsListView">
                         <ListView.ItemTemplate>
                             <DataTemplate>
                                 <Grid>
@@ -60,9 +60,14 @@
                         </ListView.ContextMenu>
                     </ListView>
                 </Grid>
+
+                <GridSplitter Grid.Column="1"
+                              HorizontalAlignment="Center"
+                              VerticalAlignment="Stretch"
+                              Width="4"/>
                 
-                <Grid Grid.Column="1"
-                      Margin="4,0,0,0">
+                <Grid Grid.Column="2"
+                      Margin="0,0,0,0">
                     <ListView ItemsSource="{Binding Items}"
                               x:Name="ItemsListView"
                               ContextMenuOpening="ListViewMenuItem_ContextMenuOpening">
