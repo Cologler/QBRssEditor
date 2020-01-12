@@ -174,7 +174,6 @@
     <Compile Include="Services\FileSessionService.cs" />
     <Compile Include="Services\GroupingService.cs" />
     <Compile Include="Services\IMarkReadService.cs" />
-    <Compile Include="Services\IQBitStatusService.cs" />
     <Compile Include="Services\JsonService.cs" />
     <Compile Include="Services\KeywordEmitter\FirstElementKeywordEmitter.cs" />
     <Compile Include="Services\KeywordEmitter\IKeywordEmitter.cs" />
@@ -183,7 +182,6 @@
     <Compile Include="Services\KeywordEmitter\PartsKeywordEmitter.cs" />
     <Compile Include="Services\KeywordEmitter\SeriesKeywordEmitter.cs" />
     <Compile Include="Services\LocalDbHideItemService.cs" />
-    <Compile Include="Services\QBitStatusService.cs" />
     <Compile Include="Services\ResourceItemsService.cs" />
     <Compile Include="Services\UpdateDbService.cs" />
     <Page Include="MainWindow.xaml">
