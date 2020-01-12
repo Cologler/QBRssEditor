@@ -54,7 +54,7 @@ namespace QBRssEditor.Model
             }
         }
 
-        public IEnumerable<ResourceItem> GetNotExists(IReadOnlyDictionary<string, ResourceItem> exists, CancellationToken cancellationToken)
+        public IEnumerable<ResourceItem> GetNotExists(HashSet<string> existsKeys, CancellationToken cancellationToken)
         {
             IEnumerable<ResourceItem> SelectNotExists(string path)
             {
@@ -64,7 +64,7 @@ namespace QBRssEditor.Model
                 foreach (var item in this._jsonService.Load<List<RssItem>>(path))
                 {
                     var id = $"{name}::{item.Id}";
-                    if (!exists.ContainsKey(id))
+                    if (!existsKeys.Contains(id))
                     {
                         yield return new ResourceItem
                         {

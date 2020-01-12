@@ -62,7 +62,7 @@ namespace QBRssEditor.Services
         private void InternalUpdateDb(IServiceProvider serviceProvider, CancellationToken cancellationToken)
         {
             var ctx = serviceProvider.GetRequiredService<LocalDbContext>();
-            var exists = ctx.Resources.ToDictionary(z => z.Id);
+            var exists = ctx.Resources.Select(z => z.Id).ToHashSet();
             var newItems = serviceProvider.GetServices<IResourceProvider>()
                 .SelectMany(z => z.GetNotExists(exists, cancellationToken))
                 .ToDictionary(z => z.Id);
