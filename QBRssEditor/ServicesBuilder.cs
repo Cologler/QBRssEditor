@@ -22,7 +22,6 @@ namespace QBRssEditor
                 })
                 .AddSingleton<Encoding>(new UTF8Encoding(false))
                 .AddSingleton<JsonService>()
-                .AddSingleton<IQBitStatusService, QBitStatusService>()
                 .AddSingleton<UpdateDbService>()
                 .AddDbContext<LocalDbContext>(options => options.UseSqlite($"Data Source=localdb.sqlite3"))
                 .AddSingleton<ResourceItemsService>()
