@@ -15,6 +15,7 @@ using System.Windows.Shapes;
 using QBRssEditor.Model;
 using QBRssEditor.Services;
 using Microsoft.Extensions.DependencyInjection;
+using QBRssEditor.Abstractions;
 
 namespace QBRssEditor
 {
@@ -26,8 +27,31 @@ namespace QBRssEditor
         public MainWindow()
         {
             InitializeComponent();
-            this.ViewModel = App.ServiceProvider.GetService<MainWindowViewModel>();
+            this.OnServiceProviderInit(App.ServiceProvider);
+        }
+
+        private void OnServiceProviderInit(IServiceProvider serviceProvider)
+        {
+            this.ViewModel = serviceProvider.GetService<MainWindowViewModel>();
             this.ViewModel.SearchText = string.Empty;
+
+            var orps = serviceProvider.GetServices<IResourceProvider>()
+                .OfType<IOptionalResourceProvider>()
+                .ToArray();
+            foreach (var orp in orps)
+            {
+                var mi = new MenuItem
+                {
+                    IsCheckable = true,
+                    Header = orp.Name,
+                    IsChecked = orp.IsEnable ?? true
+                };
+                mi.Click += (_, _2) =>
+                {
+                    orp.IsEnable = mi.IsChecked;
+                };
+                this.ProvidersMenuItem.Items.Add(mi);
+            }
         }
 
         MainWindowViewModel ViewModel

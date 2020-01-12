@@ -10,11 +10,21 @@
         Width="1000">
     <Grid>
         <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
             <RowDefinition />
             <RowDefinition Height="Auto" />
         </Grid.RowDefinitions>
-        
-        <Grid Margin="4">
+
+        <Grid>
+            <Menu>
+                <MenuItem Header="Providers"
+                          x:Name="ProvidersMenuItem">
+                </MenuItem>
+            </Menu>
+        </Grid>
+
+        <Grid Margin="4"
+              Grid.Row="1">
             <Grid.RowDefinitions>
                 <RowDefinition Height="Auto" />
                 <RowDefinition Height="Auto" />
@@ -120,7 +130,7 @@
             </Grid>
         </Grid>
 
-        <Grid Grid.Row="1">
+        <Grid Grid.Row="2">
             <StatusBar>
                 <TextBlock Text="total:"/>
                 <TextBlock Text="{Binding TotalCount}" />

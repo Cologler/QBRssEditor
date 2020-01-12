@@ -10,6 +10,8 @@ namespace QBRssEditor.Abstractions
 {
     interface IResourceProvider
     {
+        string Name { get; }
+
         IEnumerable<ResourceItem> GetNotExists(HashSet<string> existsKeys, CancellationToken cancellationToken);
     }
 }

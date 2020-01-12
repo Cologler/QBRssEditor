@@ -15,7 +15,7 @@ using QBRssEditor.Services;
 
 namespace QBRssEditor.Model
 {
-    class QBRssDataContext : IResourceProvider
+    class QBRssDataContext : IOptionalResourceProvider
     {
         static readonly string QBRssRootPath = Path.Combine(
             Environment.ExpandEnvironmentVariables("%LOCALAPPDATA%"),
@@ -32,6 +32,10 @@ namespace QBRssEditor.Model
         }
 
         public IEnumerable<RssItem> Items => this._items.SelectMany(z => z);
+
+        public bool? IsEnable { get; set; }
+
+        public string Name => "qBittorrent rss";
 
         void Load()
         {
