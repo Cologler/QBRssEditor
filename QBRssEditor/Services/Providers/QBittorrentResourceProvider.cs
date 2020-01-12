@@ -7,6 +7,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Newtonsoft.Json;
 using QBRssEditor.Abstractions;
 using QBRssEditor.LocalDb;
+using QBRssEditor.Model;
 
 namespace QBRssEditor.Services.Providers
 {
@@ -23,8 +24,6 @@ namespace QBRssEditor.Services.Providers
         {
             this._jsonService = serviceProvider.GetRequiredService<JsonService>();
         }
-
-        public bool? IsEnable { get; set; }
 
         public string Name => "qBittorrent rss";
 

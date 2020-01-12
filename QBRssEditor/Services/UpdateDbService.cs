@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using Microsoft.Extensions.DependencyInjection;
 using QBRssEditor.Abstractions;
 using QBRssEditor.LocalDb;
+using QBRssEditor.Model;
 
 namespace QBRssEditor.Services
 {
@@ -59,9 +60,17 @@ namespace QBRssEditor.Services
 
         private void InternalUpdateDb(IServiceProvider serviceProvider, CancellationToken cancellationToken)
         {
+            var set = serviceProvider.GetRequiredService<AppSettings>();
             var ctx = serviceProvider.GetRequiredService<LocalDbContext>();
             var rps = serviceProvider.GetServices<IResourceProvider>()
-                .Where(z => (z as IOptionalResourceProvider)?.IsEnable ?? true)
+                .Where(z =>
+                {
+                    if (z is IOptionalResourceProvider o)
+                    {
+                        return set.GetProviderSettings(o.Name).IsEnabled;
+                    }
+                    return true;
+                })
                 .ToArray();
 
             var exists = ctx.Resources.Select(z => z.Id).ToHashSet();

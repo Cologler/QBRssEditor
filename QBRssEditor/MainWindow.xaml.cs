@@ -4,6 +4,7 @@ using System.Windows;
 using System.Windows.Controls;
 using Microsoft.Extensions.DependencyInjection;
 using QBRssEditor.Abstractions;
+using QBRssEditor.Model;
 
 namespace QBRssEditor
 {
@@ -23,6 +24,7 @@ namespace QBRssEditor
             this.ViewModel = serviceProvider.GetService<MainWindowViewModel>();
             this.ViewModel.SearchText = string.Empty;
 
+            var settings = serviceProvider.GetRequiredService<AppSettings>();
             var orps = serviceProvider.GetServices<IResourceProvider>()
                 .OfType<IOptionalResourceProvider>()
                 .ToArray();
@@ -32,11 +34,11 @@ namespace QBRssEditor
                 {
                     IsCheckable = true,
                     Header = orp.Name,
-                    IsChecked = orp.IsEnable ?? true
+                    IsChecked = settings.GetProviderSettings(orp.Name).IsEnabled
                 };
                 mi.Click += (_, _2) =>
                 {
-                    orp.IsEnable = mi.IsChecked;
+                    settings.GetProviderSettings(orp.Name).IsEnabled = mi.IsChecked;
                 };
                 this.ProvidersMenuItem.Items.Add(mi);
             }
