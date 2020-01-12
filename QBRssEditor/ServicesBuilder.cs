@@ -5,9 +5,9 @@ using Microsoft.Extensions.DependencyInjection;
 using Newtonsoft.Json;
 using QBRssEditor.Abstractions;
 using QBRssEditor.LocalDb;
-using QBRssEditor.Model;
 using QBRssEditor.Services;
 using QBRssEditor.Services.KeywordEmitter;
+using QBRssEditor.Services.Providers;
 
 namespace QBRssEditor
 {
@@ -28,8 +28,8 @@ namespace QBRssEditor
                 .AddSingleton<IHideItemService, LocalDbHideItemService>()
                 .AddSingleton<FileSessionService>()
                 .AddTransient<MainWindowViewModel>()
-                .AddTransient<QBRssDataContext>()
-                .AddTransient<IResourceProvider, QBRssDataContext>()
+                .AddTransient<QBittorrentResourceProvider>()
+                .AddTransient<IResourceProvider, QBittorrentResourceProvider>()
                 .AddSingleton<IKeywordEmitter, OriginKeywordEmitter>()
                 .AddSingleton<IKeywordEmitter, MovieKeywordEmitter>()
                 .AddSingleton<IKeywordEmitter, SeriesKeywordEmitter>()

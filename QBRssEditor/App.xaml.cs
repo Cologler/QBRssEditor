@@ -1,19 +1,10 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Configuration;
-using System.Data;
 using System.Diagnostics;
-using System.Linq;
-using System.Text;
 using System.Threading;
-using System.Threading.Tasks;
 using System.Windows;
 using Microsoft.Extensions.DependencyInjection;
-using Newtonsoft.Json;
 using QBRssEditor.LocalDb;
-using QBRssEditor.Model;
 using QBRssEditor.Services;
-using QBRssEditor.Services.KeywordEmitter;
 
 namespace QBRssEditor
 {
