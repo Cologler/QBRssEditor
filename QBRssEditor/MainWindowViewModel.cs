@@ -116,7 +116,7 @@ namespace QBRssEditor
 
                 await Task.Run(() =>
                 {
-                    var items = states.ToArray();
+                    var items = states.OrderBy(z => z.Title).ToArray();
                     this.TotalCount = items.Length.ToString();
 
                     if (!string.IsNullOrEmpty(this.SearchText))
