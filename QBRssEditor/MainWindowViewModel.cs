@@ -206,13 +206,13 @@ namespace QBRssEditor
             }
         }
 
-        public async void MarkReaded(IList items)
+        public async void MarkHided(IList items)
         {
-            await this.MarkReadedAsync(items.OfType<ItemViewModel>().ToArray());
-            await this.MarkReadedAsync(items.OfType<GroupViewModel>().ToArray());
+            await this.MarkHidedAsync(items.OfType<ItemViewModel>().ToArray());
+            await this.MarkHidedAsync(items.OfType<GroupViewModel>().ToArray());
         }
 
-        async Task MarkReadedAsync(ItemViewModel[] viewModels)
+        async Task MarkHidedAsync(ItemViewModel[] viewModels)
         {
             if (viewModels.Length == 0) return;
 
@@ -225,7 +225,7 @@ namespace QBRssEditor
             this.OnPropertyChanged(nameof(this.JournalCount));
         }
 
-        async Task MarkReadedAsync(GroupViewModel[] viewModels)
+        async Task MarkHidedAsync(GroupViewModel[] viewModels)
         {
             if (viewModels.Length == 0) return;
 
@@ -257,7 +257,7 @@ namespace QBRssEditor
                 }
                 this.OpeningUrl = string.Empty;
             }
-            await this.MarkReadedAsync(viewModels);
+            await this.MarkHidedAsync(viewModels);
         }
 
         public void CopyUrl(IList items)

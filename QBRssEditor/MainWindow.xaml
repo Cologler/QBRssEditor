@@ -64,8 +64,8 @@
                         </ListView.ItemTemplate>
                         <ListView.ContextMenu>
                             <ContextMenu>
-                                <MenuItem Header="Mark readed"
-                                          Click="GroupMarkReadMenuItem_Click"/>
+                                <MenuItem Header="Mark hided"
+                                          Click="GroupMarkHidedMenuItem_Click"/>
                             </ContextMenu>
                         </ListView.ContextMenu>
                     </ListView>
@@ -99,8 +99,8 @@
                         </ListView.ItemTemplate>
                         <ListView.ContextMenu>
                             <ContextMenu>
-                                <MenuItem Header="Mark readed"
-                                          Click="ItemMarkReadMenuItem_Click" />
+                                <MenuItem Header="Mark hided"
+                                          Click="ItemMarkHidedMenuItem_Click" />
                                 <MenuItem Header="Open url"
                                           Click="OpenUrlMenuItem_Click" />
                                 <MenuItem Header="Copy url"

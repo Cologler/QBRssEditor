@@ -50,8 +50,8 @@ namespace QBRssEditor
             set => this.DataContext = value;
         }
 
-        private void ItemMarkReadMenuItem_Click(object sender, RoutedEventArgs e) => 
-            this.ViewModel.MarkReaded(this.ItemsListView.SelectedItems);
+        private void ItemMarkHidedMenuItem_Click(object sender, RoutedEventArgs e) => 
+            this.ViewModel.MarkHided(this.ItemsListView.SelectedItems);
 
         private async void Flush_Click(object sender, RoutedEventArgs e) { }
 
@@ -85,8 +85,8 @@ namespace QBRssEditor
             }
         }
 
-        private void GroupMarkReadMenuItem_Click(object sender, RoutedEventArgs e) => 
-            this.ViewModel.MarkReaded(this.GroupsListView.SelectedItems);
+        private void GroupMarkHidedMenuItem_Click(object sender, RoutedEventArgs e) => 
+            this.ViewModel.MarkHided(this.GroupsListView.SelectedItems);
 
         private void OpenUrlMenuItem_Click(object sender, RoutedEventArgs e) =>
             this.ViewModel.OpenUrl(this.ItemsListView.SelectedItems);
