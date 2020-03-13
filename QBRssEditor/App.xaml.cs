@@ -24,6 +24,7 @@ namespace QBRssEditor
             _mutex = new Mutex(true, MutexName, out var isNew);
             if (!isNew)
             {
+                MessageBox.Show("another instance is opened, shutdown this now.", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
                 this.Shutdown();
             }
 
